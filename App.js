@@ -92,9 +92,9 @@ const App = () => {
                 useNativeDriver: true,
                 headerShown: false,
               }}
-              initialRouteName={'Dashboard'}
+              initialRouteName={'Home'}
               detachInactiveScreens={false}>
-              <Stack.Screen name="Dashboard" component={MainLayout} />
+              <Stack.Screen name="Home" component={MainLayout} />
               <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} />
             </Stack.Navigator>

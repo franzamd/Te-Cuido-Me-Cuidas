@@ -5,6 +5,7 @@ import FormInput from './FormInput';
 import TextButton from './TextButton';
 import FormSelect from './FormSelect';
 import FormDate from './FormDate';
+import MenuCard from './MenuCard';
 
 export {
   CustomButton,
@@ -13,5 +14,6 @@ export {
   FormInput,
   TextButton,
   FormSelect,
-  FormDate
+  FormDate,
+  MenuCard
 };

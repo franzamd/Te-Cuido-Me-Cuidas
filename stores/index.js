@@ -4,6 +4,7 @@ import authReducer from './authReducer';
 import communityReducer from './communityReducer';
 import establishmentReducer from './establishmentReducer';
 import municipalityReducer from './municipalityReducer';
+import tabReducer from './tabReducer';
 
 export default combineReducers({
   theme: themeReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   community: communityReducer,
   establishment: establishmentReducer,
   municipality: municipalityReducer,
+  tab: tabReducer
 });
