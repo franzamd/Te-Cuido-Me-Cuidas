@@ -65,7 +65,7 @@ const Onboarding = () => {
             ...FONTS.body3,
           }}
         >
-          La aplicación que te permite denunciar de manera rápida y sencilla, juntos podemos hacer la diferencia.
+          La aplicación que te permite denunciar de manera rápida y sencilla, juntas y juntos podemos hacer la diferencia.
         </Text>
 
         {/* Buttons */}

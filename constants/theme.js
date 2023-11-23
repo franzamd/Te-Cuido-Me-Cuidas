@@ -108,7 +108,7 @@ export const darkTheme = {
 
 export const lightTheme = {
   name: 'light',
-  backgroundColor1: COLORS.gray10,
+  backgroundColor1: COLORS.white,
   backgroundColor2: COLORS.primary3,
   backgroundColor3: COLORS.additionalColor11,
   backgroundColor4: COLORS.white,
