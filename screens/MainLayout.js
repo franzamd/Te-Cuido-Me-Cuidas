@@ -14,7 +14,10 @@ import { setSelectedTab } from '../stores/tabActions';
 
 // components
 import { Onboarding, Complaint, Settings, Emergency } from './';
-import { Loading, TextButton } from '../components';
+import {
+  Loading,
+  // TextButton
+} from '../components';
 import { COLORS, SIZES, icons, constants, FONTS } from '../constants';
 
 const TabButton = ({
@@ -80,7 +83,7 @@ const TabButton = ({
 const MainLayout = ({
   appTheme,
   userLogin,
-  logout,
+  // logout,
   loadUser,
   setSelectedTab,
   tab,
@@ -132,6 +135,10 @@ const MainLayout = ({
     (async () => {
       await loadUser()
     })()
+
+    return () => {
+
+    }
   }, [])
 
   useEffect(() => {
@@ -184,7 +191,7 @@ const MainLayout = ({
         <View
           style={{
             flex: 1,
-            backgroundColor: appTheme?.backgroundColor8
+            backgroundColor: appTheme?.backgroundColor1,
           }}
         >
           {/* Content */}
@@ -214,7 +221,7 @@ const MainLayout = ({
                     {item.label === constants.screens.home && (
                       <Complaint navigation={navigation} />
                     )}
-                    {item.label === constants.screens.emergency && (
+                    {(item.label === constants.screens.emergency && userInfo.role === 'usuario') && (
                       <Emergency navigation={navigation} />
                     )}
                     {item.label === constants.screens.settings && (
@@ -298,7 +305,7 @@ const MainLayout = ({
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
                 paddingBottom: 50,
-                backgroundColor: appTheme?.backgroundColor1,
+                backgroundColor: appTheme?.backgroundColor5,
               }}
             >
               <TabButton
@@ -309,14 +316,16 @@ const MainLayout = ({
                 innerContainerStyle={homeColorStyle}
                 onPress={() => setSelectedTab(constants.screens.home)}
               />
-              <TabButton
-                label={constants.screens.emergency}
-                icon={icons.hospital}
-                isFocused={selectedTab === constants.screens.emergency}
-                outerContainerStyle={emergencyFlexStyle}
-                innerContainerStyle={emergencyColorStyle}
-                onPress={() => setSelectedTab(constants.screens.emergency)}
-              />
+              {userInfo.role === 'usuario' && (
+                <TabButton
+                  label={constants.screens.emergency}
+                  icon={icons.hospital}
+                  isFocused={selectedTab === constants.screens.emergency}
+                  outerContainerStyle={emergencyFlexStyle}
+                  innerContainerStyle={emergencyColorStyle}
+                  onPress={() => setSelectedTab(constants.screens.emergency)}
+                />
+              )}
               <TabButton
                 label={constants.screens.settings}
                 icon={icons.settings}

@@ -36,6 +36,7 @@ export const COLORS = {
   transparentWhite1: 'rgba(255, 255, 255, 0.1)',
   transparentDarkGray: 'rgba(20,20,20, 0.4)',
   transparentBlack1: 'rgba(0, 0, 0, 0.1)',
+  transparentSecondaryLight: 'rgba(168, 174, 172, 0.2)',
   transparentBlack7: 'rgba(0, 0, 0, 0.7)',
 };
 export const SIZES = {

@@ -5,6 +5,7 @@ import communityReducer from './communityReducer';
 import establishmentReducer from './establishmentReducer';
 import municipalityReducer from './municipalityReducer';
 import tabReducer from './tabReducer';
+import complaintReducer from './complaintReducer';
 
 export default combineReducers({
   theme: themeReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   community: communityReducer,
   establishment: establishmentReducer,
   municipality: municipalityReducer,
-  tab: tabReducer
+  tab: tabReducer,
+  complaint: complaintReducer
 });

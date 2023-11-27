@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RESET_SELECTED_TAB } from './tabActions'
+import { COMMUNITY_RESET } from './communityActions'
+import { ESTABLISHMENT_RESET } from './establishmentActions'
+import { MUNICIPALITY_RESET } from './municipalityActions'
+import { COMPLAINT_RESET } from './complaintActions'
 
 export const USER_LOGIN_REQUEST = '@userLogin/USER_LOGIN_REQUEST';
 export const USER_LOGIN_SUCCESS = '@userLogin/USER_LOGIN_SUCCESS';
@@ -100,7 +105,13 @@ export const logout = () => async dispatch => {
     await AsyncStorage.removeItem('@userLogin');
     // Remove from api
     await axios.get(`${API_URL}/api/auth/logout`);
+    // Clear data
     dispatch({ type: USER_LOGOUT });
+    dispatch({ type: RESET_SELECTED_TAB });
+    dispatch({ type: COMMUNITY_RESET });
+    dispatch({ type: ESTABLISHMENT_RESET });
+    dispatch({ type: MUNICIPALITY_RESET });
+    dispatch({ type: COMPLAINT_RESET });
   } catch (error) {
     dispatch({ type: USER_LOGOUT_FAIL, payload: error.response?.data?.errors });
   }

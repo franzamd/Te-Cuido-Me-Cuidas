@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
-import { IconButton } from '../components';
+import { IconButton, MenuCard } from '../components';
 import { SIZES, FONTS, icons } from '../constants';
 
 const Emergency = ({ appTheme, navigation }) => {
@@ -28,7 +28,7 @@ const Emergency = ({ appTheme, navigation }) => {
           Emergencia
         </Text>
 
-        {/* <View
+        <View
           style={{
             flexDirection: 'row',
           }}
@@ -42,7 +42,7 @@ const Emergency = ({ appTheme, navigation }) => {
             }}
             onPress={() => navigation.navigate('HelpEmergency')}
           />
-        </View> */}
+        </View>
       </View>
     );
   }
@@ -56,6 +56,7 @@ const Emergency = ({ appTheme, navigation }) => {
     >
       {/* Header */}
       {renderHeader()}
+
 
     </SafeAreaView>
   );

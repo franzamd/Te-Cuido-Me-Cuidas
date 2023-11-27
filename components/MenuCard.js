@@ -31,8 +31,8 @@ const CardDetails = ({ infoItem }) => {
         <Image
           source={icons.right_circle}
           style={{
-            width: 20,
-            height: 20,
+            width: 30,
+            height: 30,
             marginRight: SIZES.base,
             tintColor: COLORS.gray10,
           }}
@@ -81,9 +81,11 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
       <TouchableOpacity
         style={{
           height: 120,
-          width: SIZES.width * 0.9,
+          width: SIZES.width * 0.88,
           marginTop: SIZES.radius,
           borderRadius: SIZES.radius,
+          borderWidth: 2,
+          borderColor: COLORS.secondary,
           ...containerStyle,
         }}
         onPress={onPress}
@@ -93,16 +95,30 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
           source={infoItem.image}
           resizeMode="cover"
           style={{
-            width: SIZES.width * 0.9,
-            height: 120,
+            width: 'auto',
+            height: '100%',
+            borderRadius: SIZES.radius,
+          }}
+        />
+
+        {/* Optional Card Opacity */}
+        <View
+          style={{
+            overflow: 'hidden',
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            backgroundColor: COLORS.transparentSecondaryLight,
+            paddingVertical: SIZES.radius,
+            paddingHorizontal: SIZES.base,
             borderRadius: SIZES.radius,
           }}
         />
 
         {/* Card Info */}
         <CardInfo infoItem={infoItem} />
-      </TouchableOpacity>
-    </View>
+      </TouchableOpacity >
+    </View >
   );
 };
 

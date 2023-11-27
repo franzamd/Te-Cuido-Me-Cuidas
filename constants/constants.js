@@ -13,6 +13,13 @@ const protectionMechanismOptionsList = [
   { label: 'Comunidad', value: 'Comunidad' }
 ];
 
+const typeComplaintOptionsList = [
+  { label: 'Seleccionar', value: '0' },
+  { label: 'Violencia Sexual', value: 'Violencia Sexual' },
+  { label: 'Violencia Física', value: 'Violencia Física' },
+  { label: 'Violencia Psicológica', value: 'Violencia Psicológica' }
+];
+
 const screens = {
   home: 'Inicio',
   emergency: 'Emergencia',
@@ -70,4 +77,5 @@ export default {
   bottom_tabs,
   offline,
   cardMenus,
+  typeComplaintOptionsList
 };
