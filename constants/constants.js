@@ -70,6 +70,24 @@ const offline = {
   description: 'Por favor habilite su conexión a internet para continuar.',
 };
 
+const alertMsg = {
+  title: 'Confirmar Acción'
+}
+
+const typeComplaint = {
+  sexual: 'Violencia Sexual',
+  physical: 'Violencia Física',
+  psychological: 'Violencia Psicológica'
+}
+
+const typeSentComplaint = 'Botón de Emergencia'
+
+const statusComplaint = {
+  success: 'Aceptado',
+  rejected: 'Rechazado',
+  inProgress: 'En Proceso'
+}
+
 export default {
   gendersOptionList,
   protectionMechanismOptionsList,
@@ -77,5 +95,9 @@ export default {
   bottom_tabs,
   offline,
   cardMenus,
-  typeComplaintOptionsList
+  typeComplaintOptionsList,
+  alertMsg,
+  typeComplaint,
+  typeSentComplaint,
+  statusComplaint
 };

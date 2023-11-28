@@ -7,6 +7,11 @@ import FormSelect from './FormSelect';
 import FormDate from './FormDate';
 import FormInputArea from './FormInputArea';
 import MenuCard from './MenuCard';
+import ButtonCard from './ButtonCard';
+import SettingValue from './SettingValue';
+import ComplaintValue from './ComplaintValue';
+import LineDivider from './LineDivider';
+import ComplaintTextArea from './ComplaintTextArea';
 
 export {
   CustomButton,
@@ -17,5 +22,10 @@ export {
   TextButton,
   FormSelect,
   FormDate,
-  MenuCard
+  MenuCard,
+  ButtonCard,
+  SettingValue,
+  ComplaintValue,
+  LineDivider,
+  ComplaintTextArea
 };

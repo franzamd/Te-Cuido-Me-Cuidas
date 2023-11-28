@@ -179,7 +179,7 @@ const SignIn = ({
             </TouchableOpacity>
           }
         />
-        {/* Errors */}
+        {/* Error Message */}
         {Boolean(errors) && (
           <View
             style={{
@@ -190,8 +190,9 @@ const SignIn = ({
             <Text
               style={{
                 color: COLORS.error,
+                ...FONTS.body4
               }}>
-              {errors.error}
+              {errors?.error}
             </Text>
           </View>
         )}

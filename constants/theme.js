@@ -36,7 +36,7 @@ export const COLORS = {
   transparentWhite1: 'rgba(255, 255, 255, 0.1)',
   transparentDarkGray: 'rgba(20,20,20, 0.4)',
   transparentBlack1: 'rgba(0, 0, 0, 0.1)',
-  transparentSecondaryLight: 'rgba(168, 174, 172, 0.2)',
+  transparentSecondaryLight: 'rgba(168, 174, 172, 0.15)',
   transparentBlack7: 'rgba(0, 0, 0, 0.7)',
 };
 export const SIZES = {
@@ -47,9 +47,9 @@ export const SIZES = {
   padding: 24,
 
   // font sizes
-  largeTitle: 38,
-  h1: 24,
-  h2: 20,
+  largeTitle: 36,
+  h1: 20,
+  h2: 18,
   h3: 16,
   h4: 14,
   h5: 12,

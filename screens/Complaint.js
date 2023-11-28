@@ -8,7 +8,12 @@ import { IconButton, MenuCard } from '../components';
 import { SIZES, FONTS, icons, constants } from '../constants';
 import { ComplaintUser, ComplaintInstance } from '../screens';
 
-const Complaint = ({ appTheme, userLogin, navigation }) => {
+const Complaint = ({
+  appTheme,
+  userLogin,
+  navigation,
+  isFocusedComponent
+}) => {
   const { userInfo } = userLogin
 
   // Render
@@ -51,7 +56,7 @@ const Complaint = ({ appTheme, userLogin, navigation }) => {
     );
   }
 
-  function renderMenuSection() {
+  function renderInterMenuSection() {
     return (
       <View
         style={{
@@ -84,15 +89,15 @@ const Complaint = ({ appTheme, userLogin, navigation }) => {
     );
   }
 
-  function renderCompliantInstance() {
+  function renderInstanceScreen() {
     return (
       <ComplaintInstance navigation={navigation} />
     )
   }
 
-  function renderCompliantUser() {
+  function renderUserScreen() {
     return (
-      <ComplaintUser navigation={navigation} />
+      <ComplaintUser navigation={navigation} isFocusedComponent={isFocusedComponent} />
     )
   }
 
@@ -108,13 +113,13 @@ const Complaint = ({ appTheme, userLogin, navigation }) => {
 
       {/* Menu Section */}
       {/* User role instance and admin */}
-      {(userInfo.role === USER_ROLE_INSTANCE || userInfo.role === USER_ROLE_ADMIN) && renderCompliantInstance()}
+      {(userInfo.role === USER_ROLE_INSTANCE || userInfo.role === USER_ROLE_ADMIN) && renderInstanceScreen()}
 
       {/* User role Intermediary */}
-      {userInfo.role === USER_ROLE_INTERMEDIARY && renderMenuSection()}
+      {userInfo.role === USER_ROLE_INTERMEDIARY && renderInterMenuSection()}
 
       {/* User default */}
-      {userInfo.role === USER_ROLE_DEFAULT && renderCompliantUser()}
+      {userInfo.role === USER_ROLE_DEFAULT && renderUserScreen()}
     </SafeAreaView>
   );
 };

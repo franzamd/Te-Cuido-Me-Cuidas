@@ -552,7 +552,7 @@ const SingUp = ({
           />
         )}
 
-        {/* Errors */}
+        {/* Error Message */}
         {Boolean(errors?.error || errors?.password) && (
           <View
             style={{
@@ -563,6 +563,7 @@ const SingUp = ({
             <Text
               style={{
                 color: COLORS.error,
+                ...FONTS.body4
               }}>
               {errors?.error || errors?.password}
             </Text>

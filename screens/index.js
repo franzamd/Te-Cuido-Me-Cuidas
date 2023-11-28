@@ -7,6 +7,8 @@ import ComplaintUser from './ComplaintUser';
 import ComplaintInstance from './ComplaintInstance';
 import Settings from './Settings';
 import Emergency from './Emergency';
+import ComplaintHistory from './ComplaintHistory';
+import ComplaintDetails from './ComplaintDetails';
 
 export {
   MainLayout,
@@ -17,5 +19,7 @@ export {
   ComplaintUser,
   ComplaintInstance,
   Settings,
-  Emergency
+  Emergency,
+  ComplaintHistory,
+  ComplaintDetails
 };

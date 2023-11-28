@@ -20,7 +20,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 // import SplashScreen from 'react-native-splash-screen';
 
 import rootReducer from './stores';
-import { MainLayout, SignIn, SignUp } from './screens';
+import { MainLayout, SignIn, SignUp, ComplaintHistory, ComplaintDetails } from './screens';
 import { COLORS } from './constants';
 import { Loading } from './components';
 
@@ -97,6 +97,8 @@ const App = () => {
               <Stack.Screen name="Home" component={MainLayout} />
               <Stack.Screen name="SignIn" component={SignIn} />
               <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen name="ComplaintHistory" component={ComplaintHistory} />
+              <Stack.Screen name="ComplaintDetails" component={ComplaintDetails} />
             </Stack.Navigator>
           </NavigationContainer>
         </ToastProvider>

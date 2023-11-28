@@ -1,23 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { useToast } from 'react-native-toast-notifications';
+import { useIsFocused } from '@react-navigation/native';
 
 import { createComplaint, COMPLAINT_RESET } from '../stores/complaintActions';
 import { MenuCard, FormSelect, FormInputArea, TextButton } from '../components';
 import { SIZES, FONTS, COLORS, constants, images } from '../constants';
 
-const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint }) => {
+const ComplaintScreenUser = ({
+  appTheme,
+  navigation,
+  complaint,
+  createComplaint,
+  isFocusedComponent
+}) => {
+  // store
   const { errors, loading, createSuccess } = complaint
+
   const toast = useToast();
   const dispatch = useDispatch();
   const [typeComplaint, setTypeComplaint] = useState('0');
   const [description, setDescription] = useState('');
   const [openTypeComplaint, setOpenTypeComplaint] = useState(false);
+  const isFocused = useIsFocused();
 
+  // Toast success
   useEffect(() => {
-    if (createSuccess) {
+    if (createSuccess && isFocusedComponent && isFocused) {
       toast.show('Denuncia enviada exitosamente', {
         type: 'success',
         placement: 'top',
@@ -26,7 +37,20 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
       });
       clearFormInput()
     }
-  }, [createSuccess])
+  }, [createSuccess, isFocusedComponent, isFocused])
+
+  // Toast error
+  useEffect(() => {
+    if (errors && isFocusedComponent && isFocused) {
+      toast.show('¡Ups! Algo salió mal', {
+        type: 'danger',
+        placement: 'top',
+        duration: 5000,
+        animationType: 'slide-in',
+      });
+      clearFormInput()
+    }
+  }, [errors, isFocusedComponent, isFocused])
 
   function clearFormInput() {
     setTypeComplaint('0')
@@ -46,12 +70,13 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
     const formData = {
       type: typeComplaint,
       description,
+      // TODO: Add location gps
       location: {
         latitude: -21.541209974609348,
         longitude: -64.71459756970413
-      }
+      },
+      typeSent: constants.typeSentComplaint
     }
-
     await createComplaint(formData)
   }
 
@@ -72,7 +97,7 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
           <Text
             style={{
               marginTop: SIZES.radius,
-              color: appTheme.textColor,
+              color: appTheme?.textColor,
               ...FONTS.body3,
             }}
           >
@@ -105,14 +130,13 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
             labelStyle={{
               color: appTheme?.textColor,
             }}
-            // placeholder="Ingrese información sobre la violencia sufrida"
             containerStyle={{
               marginTop: SIZES.radius,
             }}
             errorMsg={errors?.description}
           />
 
-          {/* Errors */}
+          {/* Error Message */}
           {Boolean(errors?.error) && (
             <View
               style={{
@@ -123,6 +147,7 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
               <Text
                 style={{
                   color: COLORS.error,
+                  ...FONTS.body4
                 }}>
                 {errors?.error}
               </Text>
@@ -174,27 +199,27 @@ const ComplaintScreenUser = ({ appTheme, navigation, complaint, createComplaint 
               ...FONTS.body3,
             }}
           >
-            Realiza seguimiento a tus denuncias enviadas
+            Realiza seguimiento a tus denuncias
           </Text>
         </View>
+
+        {/* Historial */}
         <MenuCard
           infoItem={{
             image: images.stop_violence_1,
             name: 'Historial de Denuncias'
           }}
-          onPress={() => null}
+          onPress={() => navigation.navigate('ComplaintHistory')}
         />
       </View>
     )
   }
 
   return (
-    <View style={{
-      marginTop: SIZES.radius,
-    }}>
-      {/* Render Complaint Form */}
+    <React.Fragment>
+      {/* Complaint Form */}
       {renderFormComplaint()}
-    </View>
+    </React.Fragment>
   );
 };
 

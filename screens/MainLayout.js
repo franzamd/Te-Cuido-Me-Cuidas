@@ -141,6 +141,7 @@ const MainLayout = ({
     }
   }, [])
 
+  // Tabs
   useEffect(() => {
     if (selectedTab === constants.screens.home) {
       flatListRef?.current?.scrollToIndex({
@@ -219,10 +220,16 @@ const MainLayout = ({
                     }}
                   >
                     {item.label === constants.screens.home && (
-                      <Complaint navigation={navigation} />
+                      <Complaint
+                        navigation={navigation}
+                        isFocusedComponent={selectedTab === constants.screens.home}
+                      />
                     )}
                     {(item.label === constants.screens.emergency && userInfo.role === 'usuario') && (
-                      <Emergency navigation={navigation} />
+                      <Emergency
+                        navigation={navigation}
+                        isFocusedComponent={selectedTab === constants.screens.emergency}
+                      />
                     )}
                     {item.label === constants.screens.settings && (
                       <Settings navigation={navigation} />
@@ -245,6 +252,7 @@ const MainLayout = ({
                 <Text
                   style={{
                     color: COLORS.error,
+                    ...FONTS.body3
                   }}>
                   {errors.error}
                 </Text>

@@ -10,6 +10,8 @@ const hospital = require('../assets/icons/hospital.png');
 const help = require('../assets/icons/help.png');
 const right_circle = require('../assets/icons/right_circle.png');
 const sun = require('../assets/icons/sun.png');
+const edit_profile = require('../assets/icons/edit_profile.png');
+const near_me = require('../assets/icons/near_me.png');
 
 export default {
   back,
@@ -23,5 +25,7 @@ export default {
   hospital,
   help,
   right_circle,
-  sun
+  sun,
+  edit_profile,
+  near_me
 };

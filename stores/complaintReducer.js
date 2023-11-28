@@ -4,6 +4,7 @@ const complaintReducer = (state = {}, action) => {
   switch (action.type) {
     case actionTypes.COMPLAINT_LIST_REQUEST:
     case actionTypes.COMPLAINT_CREATE_REQUEST:
+    case actionTypes.COMPLAINT_CREATE_REQUEST:
       return { loading: true };
     case actionTypes.COMPLAINT_LIST_SUCCESS:
       return { loading: false, complaints: action.payload };

@@ -38,16 +38,6 @@ const CardDetails = ({ infoItem }) => {
           }}
         />
       </View>
-
-      {/* Description */}
-      {/* <Text
-        style={{
-          color: COLORS.white,
-          ...FONTS.body4,
-        }}
-      >
-        {infoItem.description}
-      </Text> */}
     </View>
   );
 };
@@ -85,7 +75,7 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
           marginTop: SIZES.radius,
           borderRadius: SIZES.radius,
           borderWidth: 2,
-          borderColor: COLORS.secondary,
+          borderColor: COLORS.gray20,
           ...containerStyle,
         }}
         onPress={onPress}
@@ -106,7 +96,7 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
           style={{
             overflow: 'hidden',
             position: 'absolute',
-            height: '100%',
+            height: "100%",
             width: '100%',
             backgroundColor: COLORS.transparentSecondaryLight,
             paddingVertical: SIZES.radius,
