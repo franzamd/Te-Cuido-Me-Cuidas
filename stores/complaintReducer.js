@@ -5,13 +5,17 @@ const complaintReducer = (state = {}, action) => {
     case actionTypes.COMPLAINT_LIST_REQUEST:
     case actionTypes.COMPLAINT_CREATE_REQUEST:
     case actionTypes.COMPLAINT_CREATE_REQUEST:
+    case actionTypes.COMPLAINT_DELIVER_TO_INSTANCE_REQUEST:
       return { loading: true };
     case actionTypes.COMPLAINT_LIST_SUCCESS:
       return { loading: false, complaints: action.payload };
     case actionTypes.COMPLAINT_CREATE_SUCCESS:
       return { loading: false, createSuccess: true };
+    case actionTypes.COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS:
+      return { loading: false, updateSuccess: true };
     case actionTypes.COMPLAINT_CREATE_FAIL:
     case actionTypes.COMPLAINT_LIST_FAIL:
+    case actionTypes.COMPLAINT_DELIVER_TO_INSTANCE_FAIL:
       return { loading: false, errors: action.payload };
     case actionTypes.COMPLAINT_RESET:
       return {};

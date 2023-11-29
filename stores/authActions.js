@@ -6,6 +6,7 @@ import { COMMUNITY_RESET } from './communityActions'
 import { ESTABLISHMENT_RESET } from './establishmentActions'
 import { MUNICIPALITY_RESET } from './municipalityActions'
 import { COMPLAINT_RESET } from './complaintActions'
+import { USER_RESET } from './userActions'
 
 export const USER_LOGIN_REQUEST = '@userLogin/USER_LOGIN_REQUEST';
 export const USER_LOGIN_SUCCESS = '@userLogin/USER_LOGIN_SUCCESS';
@@ -112,6 +113,7 @@ export const logout = () => async dispatch => {
     dispatch({ type: ESTABLISHMENT_RESET });
     dispatch({ type: MUNICIPALITY_RESET });
     dispatch({ type: COMPLAINT_RESET });
+    dispatch({ type: USER_RESET });
   } catch (error) {
     dispatch({ type: USER_LOGOUT_FAIL, payload: error.response?.data?.errors });
   }

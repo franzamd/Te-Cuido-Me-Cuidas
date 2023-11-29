@@ -270,10 +270,10 @@ const MainLayout = ({
                     marginTop: SIZES.padding,
                     borderRadius: SIZES.radius,
                     backgroundColor:
-                      appTheme.name === 'dark' ? COLORS.primary2 : COLORS.primary2,
+                      appTheme?.name === 'dark' ? COLORS.primary2 : COLORS.primary2,
                   }}
                   labelStyle={{
-                    color: appTheme.name === 'dark' ? COLORS.black : COLORS.white,
+                    color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
                   }}
                   onPress={async () => await logout()}
                 />

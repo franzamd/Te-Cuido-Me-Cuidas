@@ -145,7 +145,7 @@ const Emergency = ({
           <Text
             style={{
               marginTop: SIZES.radius,
-              color: appTheme.textColor,
+              color: appTheme?.textColor,
               ...FONTS.body3,
             }}
           >

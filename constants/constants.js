@@ -46,22 +46,22 @@ const cardMenus = [
     id: 0,
     name: 'Realizar Denuncia',
     image: images.stop_violence_1,
-    description:
-      'Realizar una denuncia y envialo a las autoridades',
+    description: 'Realizar una denuncia y envialo a las autoridades',
+    screen: 'CreateComplaint'
   },
   {
     id: 1,
     name: 'Historial de Denuncias',
     image: images.stop_violence_2,
-    description:
-      'Revisa el estado de las denuncias enviadas a las autoridades',
+    description: 'Revisa el estado de las denuncias enviadas a las autoridades',
+    screen: 'ComplaintHistory'
   },
   {
     id: 2,
     name: 'Auxiliar Denuncia',
     image: images.stop_violence_3,
-    description:
-      'Apoya a un estudiante realizando la denuncia por ella(el) y envialo a las autoridades',
+    description: 'Apoya a un estudiante realizando la denuncia por ella(el) y envialo a las autoridades',
+    screen: 'CreateComplaint'
   },
 ];
 
@@ -85,8 +85,15 @@ const typeSentComplaint = 'Botón de Emergencia'
 const statusComplaint = {
   success: 'Aceptado',
   rejected: 'Rechazado',
-  inProgress: 'En Proceso'
+  inProgress: 'En Proceso',
+  inWaiting: 'En espera'
 }
+
+const statusOptionsList = [
+  { label: 'Seleccionar', value: '0' },
+  { label: 'Aceptado', value: 'Aceptado' },
+  { label: 'Rechazado', value: 'Rechazado' },
+]
 
 export default {
   gendersOptionList,
@@ -99,5 +106,6 @@ export default {
   alertMsg,
   typeComplaint,
   typeSentComplaint,
-  statusComplaint
+  statusComplaint,
+  statusOptionsList,
 };

@@ -26,7 +26,7 @@ const ComplaintScreenInstance = ({ appTheme, navigation }) => {
         <Text
           style={{
             marginTop: SIZES.radius,
-            color: appTheme.textColor,
+            color: appTheme?.textColor,
             textAlign: 'center',
             ...FONTS.body3,
           }}

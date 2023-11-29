@@ -37,21 +37,23 @@ const Complaint = ({
           Denuncias
         </Text>
 
-        <View
-          style={{
-            flexDirection: 'row',
-          }}
-        >
-          <IconButton
-            icon={icons.help}
-            iconStyle={{
-              width: 35,
-              height: 35,
-              tintColor: appTheme?.tintColor,
+        {(userInfo?.role === USER_ROLE_DEFAULT || userInfo?.role === USER_ROLE_INTERMEDIARY) && (
+          <View
+            style={{
+              flexDirection: 'row',
             }}
-            onPress={() => navigation.navigate('HelpComplaint')}
-          />
-        </View>
+          >
+            <IconButton
+              icon={icons.help}
+              iconStyle={{
+                width: 35,
+                height: 35,
+                tintColor: appTheme?.tintColor,
+              }}
+              onPress={() => navigation.navigate('HelpComplaint')}
+            />
+          </View>
+        )}
       </View>
     );
   }
@@ -71,9 +73,8 @@ const Complaint = ({
           renderItem={({ item, index }) => {
             return (
               <MenuCard
-                containerStyle={{ flex: 1 }}
                 infoItem={item}
-                onPress={() => navigation.navigate('CreateComplaint')}
+                onPress={() => navigation.navigate(item.screen)}
               />
             );
           }}

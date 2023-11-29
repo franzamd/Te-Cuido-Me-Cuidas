@@ -221,10 +221,10 @@ const SignIn = ({
             marginTop: SIZES.padding,
             borderRadius: SIZES.radius,
             backgroundColor:
-              appTheme.name === 'dark' ? COLORS.secondary : COLORS.secondary4,
+              appTheme?.name === 'dark' ? COLORS.secondary : COLORS.secondary4,
           }}
           labelStyle={{
-            color: appTheme.name === 'dark' ? COLORS.black : COLORS.white,
+            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
           }}
           onPress={() => {
             navigation.navigate('SignUp');

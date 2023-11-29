@@ -1,19 +1,109 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, Linking, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import moment from 'moment'
+import { USER_ROLE_INTERMEDIARY } from '@env';
+import { useToast } from 'react-native-toast-notifications';
+import { useIsFocused } from '@react-navigation/native';
 
-import { IconButton, ComplaintValue, LineDivider, ComplaintTextArea } from '../components';
-import { getComplaintDetails } from '../stores/complaintActions';
-import { SIZES, FONTS, COLORS, icons, constants, dummyData, images } from '../constants';
+import { deliverToInstance } from '../stores/complaintActions';
+import { listUsersWithRoleInstance } from '../stores/userActions';
+import { IconButton, ComplaintValue, LineDivider, ComplaintTextArea, TextButton, FormInputArea, FormSelect } from '../components';
+import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
 
 const ComplaintDetails = ({
   appTheme,
   navigation,
   route,
+  userLogin,
+  deliverToInstance,
+  complaint,
+  listUsersWithRoleInstance,
+  user: userStore
 }) => {
   const { complaintSelected } = route.params
+  const { userInfo } = userLogin
+  const { errors, loading: loadingComplaint, updateSuccess } = complaint
+  const { users, loading: loadingUser } = userStore
+
+  // Form input
+  const toast = useToast();
+  const [status, setStatus] = useState('0');
+  const [openStatus, setOpenStatus] = useState(false);
+  const [user, setUser] = useState('0');
+  const [openUser, setOpenUser] = useState(false);
+  const [userOptionsList, setUserOptionsList] = useState([
+    {
+      value: '0',
+      label: 'Seleccionar',
+    }
+  ])
+  const [description, setDescription] = useState('');
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
+      listUsersWithRoleInstance()
+    }
+
+  }, [userInfo])
+
+  // Toast success
+  useEffect(() => {
+    if (updateSuccess && isFocused) {
+      toast.show('Denuncia actualizado exitosamente', {
+        type: 'success',
+        placement: 'top',
+        duration: 5000,
+        animationType: 'slide-in',
+      });
+      clearFormInput()
+      navigation.goBack()
+    }
+  }, [updateSuccess, isFocused])
+
+  // Toast error
+  useEffect(() => {
+    if (errors && isFocused) {
+      toast.show('¡Ups! Algo salió mal', {
+        type: 'danger',
+        placement: 'top',
+        duration: 5000,
+        animationType: 'slide-in',
+      });
+      clearFormInput()
+    }
+  }, [errors, isFocused])
+
+  // Load users options list
+  useEffect(() => {
+    if (!loadingUser && users) {
+      const items = users.map((item) => ({
+        _id: item._id,
+        value: item._id,
+        label: item.profile ? `${item.profile.institutionName} | Municipio ${item.profile.municipality.name}` : '-'
+      }));
+      setUserOptionsList([
+        {
+          _id: '0',
+          value: '0',
+          label: 'Seleccione una opción'
+        },
+        ...items
+      ]);
+    }
+  }, [loadingUser, users]);
+
+  function clearFormInput() {
+    setStatus('0')
+    setOpenStatus(false)
+    setUser('0')
+    setOpenUser(false)
+    setDescription('')
+    // Clear store
+    // TODO: Complete clear store 
+  }
 
   async function handleGPSLocation() {
     let url = `https://www.google.com/maps/search/?api=1&query=${complaintSelected.location.latitude},${complaintSelected.location.longitude}`;
@@ -22,6 +112,40 @@ const ComplaintDetails = ({
       Linking.openURL(url);
     }
   }
+
+  function isEnableSend() {
+    return status !== '0' && user !== '0'
+  }
+
+  function handleSentToDeliver() {
+    Alert.alert(
+      constants.alertMsg.title,
+      '¿Estás seguro de guardar los datos de la denuncia y enviar a Instancia?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Enviar',
+          onPress: () => onSubmit()
+        },
+      ]
+    );
+  }
+
+  async function onSubmit() {
+    // hide open list display form
+    setOpenStatus(false)
+    const formData = {
+      status,
+      user,
+      description
+    }
+    await deliverToInstance(complaintSelected._id, formData)
+  }
+
 
   // Render
   function renderHeader() {
@@ -78,7 +202,7 @@ const ComplaintDetails = ({
         {/* Subtitle */}
         <Text
           style={{
-            color: appTheme.textColor,
+            color: COLORS.primary2, // appTheme?.textColor
             ...FONTS.body3,
           }}
         >
@@ -226,7 +350,7 @@ const ComplaintDetails = ({
         {/* Subtitle */}
         <Text
           style={{
-            color: appTheme.textColor,
+            color: COLORS.primary2, // appTheme?.textColor
             ...FONTS.body3,
           }}
         >
@@ -246,22 +370,16 @@ const ComplaintDetails = ({
           <LineDivider />
 
           {/* Status */}
-          {complaintSelected.intermediaryAction?.status ? (
-            <ComplaintValue
-              label="Estado"
-              value={complaintSelected.intermediaryAction?.status || '-'}
-              textStyle={{
-                color: complaintSelected.intermediaryAction?.status === constants.statusComplaint.success ? COLORS.secondary3
-                  : complaintSelected.intermediaryAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
-                    : COLORS.primary,
-              }}
-            />
-          ) : (
-            <ComplaintValue
-              label="Estado"
-              value={'En espera'}
-            />
-          )}
+          <ComplaintValue
+            label="Estado"
+            value={complaintSelected.intermediaryAction?.status || '-'}
+            textStyle={{
+              color: complaintSelected.intermediaryAction?.status === constants.statusComplaint.success ? COLORS.secondary3
+                : complaintSelected.intermediaryAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
+                  : complaintSelected.intermediaryAction?.status === constants.statusComplaint.rejected
+                    ? COLORS.primary : appTheme?.textColor,
+            }}
+          />
           <LineDivider />
 
           {/* Description */}
@@ -283,7 +401,7 @@ const ComplaintDetails = ({
 
           {/* User */}
           <ComplaintValue
-            label="Instancia de Envío"
+            label="Instancia Enviado"
             value={complaintSelected.intermediaryAction?.sentToUser?.profile?.institutionName || '-'}
           />
         </View>
@@ -301,7 +419,7 @@ const ComplaintDetails = ({
         {/* Subtitle */}
         <Text
           style={{
-            color: appTheme.textColor,
+            color: COLORS.primary2, // appTheme?.textColor
             ...FONTS.body3,
           }}
         >
@@ -321,22 +439,16 @@ const ComplaintDetails = ({
           <LineDivider />
 
           {/* Status */}
-          {complaintSelected.instanceAction?.status ? (
-            <ComplaintValue
-              label="Estado"
-              value={complaintSelected.instanceAction?.status || '-'}
-              textStyle={{
-                color: complaintSelected.instanceAction?.status === constants.statusComplaint.success ? COLORS.secondary3
-                  : complaintSelected.instanceAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
-                    : COLORS.primary,
-              }}
-            />
-          ) : (
-            <ComplaintValue
-              label="Estado"
-              value={'En espera'}
-            />
-          )}
+          <ComplaintValue
+            label="Estado"
+            value={complaintSelected.instanceAction?.status || '-'}
+            textStyle={{
+              color: complaintSelected.intermediaryAction?.status === constants.statusComplaint.success ? COLORS.secondary3
+                : complaintSelected.intermediaryAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
+                  : complaintSelected.intermediaryAction?.status === constants.statusComplaint.rejected
+                    ? COLORS.primary : appTheme?.textColor,
+            }}
+          />
           <LineDivider />
 
           {/* Description */}
@@ -356,7 +468,114 @@ const ComplaintDetails = ({
     );
   }
 
-  console.log(complaintSelected.intermediaryAction);
+  function renderBtnDeliverToInstance() {
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding
+        }}
+      >
+        <Text
+          style={{
+            marginTop: SIZES.radius,
+            color: appTheme?.textColor,
+            ...FONTS.body3,
+          }}
+        >
+          Deriva la denuncia a Instancia
+        </Text>
+
+        {/* Status */}
+        <FormSelect
+          containerStyle={{
+            marginTop: SIZES.radius
+          }}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          label="Estado"
+          errorMsg={errors?.status}
+          open={openStatus}
+          value={status}
+          items={constants.statusOptionsList}
+          setOpen={setOpenStatus}
+          setValue={setStatus}
+          zIndex={3000}
+          zIndexInverse={3000}
+        />
+
+        {/* Status */}
+        <FormSelect
+          containerStyle={{
+            marginTop: SIZES.radius
+          }}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          label="Instancia"
+          errorMsg={errors?.user}
+          open={openUser}
+          value={user}
+          items={userOptionsList}
+          setOpen={setOpenUser}
+          setValue={setUser}
+          zIndex={2000}
+          zIndexInverse={2000}
+        />
+
+        {/* Description */}
+        <FormInputArea
+          value={description}
+          label="Descripción"
+          onChange={(value) => setDescription(value)}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          containerStyle={{
+            marginTop: SIZES.radius,
+          }}
+          errorMsg={errors?.description}
+        />
+
+        {/* Error Message */}
+        {Boolean(errors?.error) && (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: SIZES.radius,
+              justifyContent: 'center'
+            }}>
+            <Text
+              style={{
+                color: COLORS.error,
+                ...FONTS.body4
+              }}>
+              {errors?.error}
+            </Text>
+          </View>
+        )}
+
+        {/* Send Btn */}
+        <TextButton
+          label="Derivar a Instancia"
+          disabled={loadingComplaint || (isEnableSend() ? false : true)}
+          contentContainerStyle={{
+            height: 50,
+            alignItems: 'center',
+            marginTop: SIZES.padding,
+            borderRadius: SIZES.radius,
+            backgroundColor: isEnableSend()
+              ? COLORS.primary2
+              : COLORS.transparentPrimary,
+          }}
+          labelStyle={{
+            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+          }}
+          onPress={handleSentToDeliver}
+        />
+      </View>
+    )
+  }
 
   return (
     <SafeAreaView
@@ -383,6 +602,11 @@ const ComplaintDetails = ({
 
         {/* Instance action information */}
         {renderComplaintInstanceInfo()}
+
+        {/* Deliver to Instance */}
+        {userInfo?.role === USER_ROLE_INTERMEDIARY && !complaintSelected.intermediaryAction.user && (
+          renderBtnDeliverToInstance()
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -407,12 +631,17 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
   return {
     appTheme: state.theme.appTheme,
+    userLogin: state.userLogin,
     complaint: state.complaint,
+    user: state.user,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    deliverToInstance: (complaintId, formData) => dispatch(deliverToInstance(complaintId, formData)),
+    listUsersWithRoleInstance: () => dispatch(listUsersWithRoleInstance())
+  };
 }
 
 

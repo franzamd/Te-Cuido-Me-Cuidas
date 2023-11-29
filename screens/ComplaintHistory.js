@@ -1,20 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import moment from 'moment'
+import { USER_ROLE_DEFAULT, USER_ROLE_INTERMEDIARY } from '@env';
 
-import { getMyComplaints } from '../stores/complaintActions';
+import { getMyComplaints, getComplaintsFromUserIntermediary } from '../stores/complaintActions';
 import { IconButton, Loading, TextButton } from '../components';
-import { SIZES, FONTS, COLORS, icons, constants, dummyData } from '../constants';
+import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
 
-const ComplaintItem = ({ navigation, item }) => {
+const ComplaintItem = ({ navigation, item, userRole }) => {
   return (
     <TouchableOpacity
       style={{
         flexDirection: 'row',
-        marginTop: SIZES.radius,
-        height: 60,
+        marginTop: SIZES.padding,
+        padding: SIZES.radius,
+        borderWidth: 1,
+        borderRadius: SIZES.radius,
+        borderColor: COLORS.gray20,
       }}
       onPress={() => navigation.navigate('ComplaintDetails', {
         complaintSelected: item
@@ -57,25 +62,49 @@ const ComplaintItem = ({ navigation, item }) => {
           justifyContent: 'center',
         }}
       >
-        <TextButton
-          label={item.status}
-          contentContainerStyle={{
-            height: 30,
-            width: 80,
-            backgroundColor:
-              item.status === constants.statusComplaint.success ? COLORS.secondary3
-                : item.status === constants.statusComplaint.inProgress ? COLORS.primary3
-                  : COLORS.primary,
-            borderRadius: SIZES.radius,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          labelStyle={{
-            color: COLORS.white,
-            ...FONTS.body5
-          }}
-          onPress={null}
-        />
+        {userRole === USER_ROLE_INTERMEDIARY ? (
+          // User intermediary
+          <TextButton
+            label={item.intermediaryAction.status}
+            contentContainerStyle={{
+              height: 30,
+              width: 80,
+              backgroundColor:
+                item.intermediaryAction.status === constants.statusComplaint.success ? COLORS.secondary3
+                  : item.intermediaryAction.status === constants.statusComplaint.inWaiting ? COLORS.primary3
+                    : COLORS.primary,
+              borderRadius: SIZES.radius,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            labelStyle={{
+              color: COLORS.white,
+              ...FONTS.body5
+            }}
+            onPress={null}
+          />
+        ) : (
+          // Default user
+          <TextButton
+            label={item.status}
+            contentContainerStyle={{
+              height: 30,
+              width: 80,
+              backgroundColor:
+                item.status === constants.statusComplaint.success ? COLORS.secondary3
+                  : item.status === constants.statusComplaint.inProgress ? COLORS.primary3
+                    : COLORS.primary,
+              borderRadius: SIZES.radius,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            labelStyle={{
+              color: COLORS.white,
+              ...FONTS.body5
+            }}
+            onPress={null}
+          />
+        )}
       </View>
     </TouchableOpacity>
   )
@@ -85,28 +114,55 @@ const ComplaintHistory = ({
   appTheme,
   navigation,
   complaint,
-  getMyComplaints
+  userLogin,
+  getMyComplaints,
+  getComplaintsFromUserIntermediary
 }) => {
   // store
   const { complaints, errors, loading } = complaint
+  const { userInfo } = userLogin
 
-  // const { complaints } = dummyData
+  const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
 
   // Fetch my complaints
-  useEffect(() => {
-    getMyComplaints()
-  }, [])
+  // TODO: Delete this example for get initial data then using isFocused for get data
+  // useEffect(() => {
+  //   if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
+  //     getComplaintsFromUserIntermediary()
+  //   }
+  //   if (userInfo?.role === USER_ROLE_DEFAULT) {
+  //     getMyComplaints()
+  //   }
+  // }, [userInfo])
 
   // Reload action scroll
   const onRefresh = useCallback(() => {
     setRefreshing(true);
 
     // Fetch data complaints
-    getMyComplaints()
+    if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
+      getComplaintsFromUserIntermediary()
+    }
+    if (userInfo?.role === USER_ROLE_DEFAULT) {
+      getMyComplaints()
+    }
 
     setRefreshing(false);
-  }, []);
+  }, [userInfo]);
+
+  // Call if screen is display again or return from other screen
+  useEffect(() => {
+    if (isFocused) {
+      if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
+        getComplaintsFromUserIntermediary()
+      }
+      if (userInfo?.role === USER_ROLE_DEFAULT) {
+        getMyComplaints()
+      }
+    }
+  }, [isFocused]);
+
 
   // Render
   function renderHeader() {
@@ -165,22 +221,22 @@ const ComplaintHistory = ({
       >
         <Text
           style={{
-            color: appTheme.textColor,
+            color: appTheme?.textColor,
             ...FONTS.body3,
           }}
         >
-          Listado de denuncias enviadas
+          Listado de denuncias
         </Text>
 
         {complaints?.length > 0 && (
           <Text
             style={{
               marginTop: SIZES.radius,
-              color: appTheme.textColor,
+              color: appTheme?.textColor,
               ...FONTS.body4,
             }}
           >
-            Selecciona una denuncia para ver mas infomación y proceso en donde se encuentra
+            Selecciona una denuncia para obtener información detallada y conocer el estado actual del proceso
           </Text>
         )}
 
@@ -196,9 +252,6 @@ const ComplaintHistory = ({
           snapToAlignment="center"
           snapToInterval={SIZES.width}
           data={complaints}
-          ItemSeparatorComponent={() => (
-            <View style={{ height: 20 }} />
-          )}
           scrollEventThrottle={16}
           keyboardDismissMode="on-drag"
           keyExtractor={(item, index) => `${item._id}`}
@@ -208,6 +261,7 @@ const ComplaintHistory = ({
                 navigation={navigation}
                 title={item.type}
                 item={item}
+                userRole={userInfo?.role}
               />
             )
           }}
@@ -274,13 +328,15 @@ const ComplaintHistory = ({
 function mapStateToProps(state) {
   return {
     appTheme: state.theme.appTheme,
+    userLogin: state.userLogin,
     complaint: state.complaint,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMyComplaints: () => dispatch(getMyComplaints())
+    getMyComplaints: () => dispatch(getMyComplaints()),
+    getComplaintsFromUserIntermediary: () => dispatch(getComplaintsFromUserIntermediary()),
   };
 }
 

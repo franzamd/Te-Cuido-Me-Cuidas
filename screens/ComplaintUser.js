@@ -54,8 +54,8 @@ const ComplaintScreenUser = ({
 
   function clearFormInput() {
     setTypeComplaint('0')
+    setOpenTypeComplaint(false)
     setDescription('')
-    setOpenTypeComplaint('')
     dispatch({ type: COMPLAINT_RESET })
   }
 
@@ -167,9 +167,9 @@ const ComplaintScreenUser = ({
                 : COLORS.transparentPrimary,
             }}
             labelStyle={{
-              color: appTheme.name === 'dark' ? COLORS.black : COLORS.white,
+              color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
             }}
-            onPress={() => onSubmit()}
+            onPress={onSubmit}
           />
         </View>
 
@@ -195,7 +195,7 @@ const ComplaintScreenUser = ({
           <Text
             style={{
               marginTop: SIZES.radius,
-              color: appTheme.textColor,
+              color: appTheme?.textColor,
               ...FONTS.body3,
             }}
           >

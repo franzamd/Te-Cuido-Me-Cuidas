@@ -70,7 +70,7 @@ const ButtonCard = ({
               </Text>
               <Text
                 style={{
-                  color: appTheme.textColor,
+                  color: appTheme?.textColor,
                   marginTop: SIZES.padding,
                   ...FONTS.body5,
                 }}
