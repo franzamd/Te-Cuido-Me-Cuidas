@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { useToast } from 'react-native-toast-notifications';
 import { useIsFocused } from '@react-navigation/native';
@@ -227,7 +227,12 @@ const CreateComplaintAssisted = ({
   }
 
   return (
-    <React.Fragment>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: appTheme?.backgroundColor1,
+      }}
+    >
       {/* Header */}
       {renderHeader()}
 
@@ -240,7 +245,7 @@ const CreateComplaintAssisted = ({
         {/* Complaint Form */}
         {renderFormComplaint()}
       </ScrollView>
-    </React.Fragment>
+    </SafeAreaView>
   );
 };
 
