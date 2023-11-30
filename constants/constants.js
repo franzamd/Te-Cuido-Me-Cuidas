@@ -46,23 +46,20 @@ const cardMenus = [
     id: 0,
     name: 'Realizar Denuncia',
     image: images.stop_violence_1,
-    description: 'Realizar una denuncia y envialo a las autoridades',
     screen: 'CreateComplaint'
   },
   {
     id: 1,
     name: 'Historial de Denuncias',
     image: images.stop_violence_2,
-    description: 'Revisa el estado de las denuncias enviadas a las autoridades',
     screen: 'ComplaintHistory'
   },
-  {
-    id: 2,
-    name: 'Auxiliar Denuncia',
-    image: images.stop_violence_3,
-    description: 'Apoya a un estudiante realizando la denuncia por ella(el) y envialo a las autoridades',
-    screen: 'CreateComplaint'
-  },
+  // {
+  //   id: 2,
+  //   name: 'Auxiliar Denuncia',
+  //   image: images.stop_violence_3,
+  //   screen: 'CreateComplaint'
+  // }
 ];
 
 const offline = {
@@ -80,7 +77,10 @@ const typeComplaint = {
   psychological: 'Violencia Psicológica'
 }
 
-const typeSentComplaint = 'Botón de Emergencia'
+const methodSentComplaint = {
+  form: 'Formulario',
+  button: 'Botón de Emergencia'
+}
 
 const statusComplaint = {
   success: 'Aceptado',
@@ -105,7 +105,7 @@ export default {
   typeComplaintOptionsList,
   alertMsg,
   typeComplaint,
-  typeSentComplaint,
+  methodSentComplaint,
   statusComplaint,
   statusOptionsList,
 };

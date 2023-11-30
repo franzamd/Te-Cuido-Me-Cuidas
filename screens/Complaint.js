@@ -38,21 +38,15 @@ const Complaint = ({
         </Text>
 
         {(userInfo?.role === USER_ROLE_DEFAULT || userInfo?.role === USER_ROLE_INTERMEDIARY) && (
-          <View
-            style={{
-              flexDirection: 'row',
+          <IconButton
+            icon={icons.help}
+            iconStyle={{
+              width: 35,
+              height: 35,
+              tintColor: appTheme?.tintColor,
             }}
-          >
-            <IconButton
-              icon={icons.help}
-              iconStyle={{
-                width: 35,
-                height: 35,
-                tintColor: appTheme?.tintColor,
-              }}
-              onPress={() => navigation.navigate('HelpComplaint')}
-            />
-          </View>
+            onPress={() => navigation.navigate('HelpComplaint')}
+          />
         )}
       </View>
     );

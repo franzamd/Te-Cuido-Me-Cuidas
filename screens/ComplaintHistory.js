@@ -25,7 +25,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         complaintSelected: item
       })}>
 
-      {/* Name, UID, Date */}
+      {/* Name, UID, Date, Method Sent */}
       <View
         style={{
           flex: 1,
@@ -52,6 +52,13 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
           }}>
           Enviado el {moment(item.createdAt).format('DD/MM/YYYY, HH:mm a').toString()}
         </Text>
+        <Text
+          style={{
+            color: COLORS.gray60,
+            ...FONTS.body5,
+          }}>
+          Metodo {item.methodSent}
+        </Text>
       </View>
 
       {/* Status */}
@@ -70,9 +77,13 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
               height: 30,
               width: 80,
               backgroundColor:
-                item.intermediaryAction.status === constants.statusComplaint.success ? COLORS.secondary3
-                  : item.intermediaryAction.status === constants.statusComplaint.inWaiting ? COLORS.primary3
-                    : COLORS.primary,
+                (item.methodSent === constants.methodSentComplaint.button && item.instanceAction.status !== constants.statusComplaint.success)
+                  ? COLORS.blue
+                  : item.intermediaryAction.status === constants.statusComplaint.success
+                    ? COLORS.secondary3
+                    : item.intermediaryAction.status === constants.statusComplaint.inWaiting
+                      ? COLORS.primary3
+                      : COLORS.primary,
               borderRadius: SIZES.radius,
               alignItems: 'center',
               justifyContent: 'center'
@@ -91,9 +102,13 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
               height: 30,
               width: 80,
               backgroundColor:
-                item.status === constants.statusComplaint.success ? COLORS.secondary3
-                  : item.status === constants.statusComplaint.inProgress ? COLORS.primary3
-                    : COLORS.primary,
+                (item.methodSent === constants.methodSentComplaint.button && item.instanceAction.status !== constants.statusComplaint.success)
+                  ? COLORS.blue
+                  : item.status === constants.statusComplaint.success
+                    ? COLORS.secondary3
+                    : item.status === constants.statusComplaint.inProgress
+                      ? COLORS.primary3
+                      : COLORS.primary,
               borderRadius: SIZES.radius,
               alignItems: 'center',
               justifyContent: 'center'
@@ -104,6 +119,17 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
             }}
             onPress={null}
           />
+        )}
+
+        {item.methodSent === constants.methodSentComplaint.button && (
+          <Text
+            style={{
+              color: COLORS.gray60,
+              fontWeight: 'bold',
+              ...FONTS.body5,
+            }}>
+            Urgente
+          </Text>
         )}
       </View>
     </TouchableOpacity>
@@ -219,6 +245,7 @@ const ComplaintHistory = ({
           marginBottom: 50
         }}
       >
+
         <Text
           style={{
             color: appTheme?.textColor,
@@ -229,15 +256,23 @@ const ComplaintHistory = ({
         </Text>
 
         {complaints?.length > 0 && (
-          <Text
+          <View
             style={{
-              marginTop: SIZES.radius,
-              color: appTheme?.textColor,
-              ...FONTS.body4,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
             }}
           >
-            Selecciona una denuncia para obtener información detallada y conocer el estado actual del proceso
-          </Text>
+            <Text
+              style={{
+                flex: 1,
+                marginTop: SIZES.radius,
+                color: appTheme?.textColor,
+                ...FONTS.body4,
+              }}
+            >
+              Selecciona una denuncia para obtener información detallada y conocer su estado
+            </Text>
+          </View>
         )}
 
         <FlatList
@@ -254,6 +289,40 @@ const ComplaintHistory = ({
           data={complaints}
           scrollEventThrottle={16}
           keyboardDismissMode="on-drag"
+          ListHeaderComponent={
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  flex: 1,
+                  ...FONTS.body4,
+                  color: appTheme?.textColor,
+                }}>
+                {complaints?.length} Resultados encontrados
+              </Text>
+
+              {/* Filter Button */}
+              <IconButton
+                icon={icons.filter}
+                iconStyle={{
+                  width: 20,
+                  height: 20,
+                }}
+                containerStyle={{
+                  width: 40,
+                  height: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 10,
+                  backgroundColor: COLORS.primary2,
+                }}
+                onPress={() => null}
+              />
+            </View>
+          }
           keyExtractor={(item, index) => `${item._id}`}
           renderItem={({ item, index }) => {
             return (

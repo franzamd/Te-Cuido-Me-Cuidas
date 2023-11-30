@@ -22,6 +22,7 @@ export const COLORS = {
   gray85: '#242526',
   gray90: '#191919',
   lightGray1: '#DDDDDD',
+  blue: '#0077b6',
 
   additionalColor4: '#C3C3C3',
   additionalColor9: '#F3F3F3',
@@ -76,7 +77,7 @@ export const FONTS = {
   body2: { fontFamily: 'Roboto-Regular', fontSize: SIZES.body2, lineHeight: 30 },
   body3: { fontFamily: 'Roboto-Regular', fontSize: SIZES.body3, lineHeight: 22 },
   body4: { fontFamily: 'Roboto-Regular', fontSize: SIZES.body4, lineHeight: 22 },
-  body5: { fontFamily: 'Roboto-Regular', fontSize: SIZES.body5, lineHeight: 22 },
+  body5: { fontFamily: 'Roboto-Regular', fontSize: SIZES.body5, lineHeight: 22 }
 };
 
 export const darkTheme = {

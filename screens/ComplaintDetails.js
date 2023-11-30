@@ -7,7 +7,7 @@ import { USER_ROLE_INTERMEDIARY } from '@env';
 import { useToast } from 'react-native-toast-notifications';
 import { useIsFocused } from '@react-navigation/native';
 
-import { deliverToInstance } from '../stores/complaintActions';
+import { deliverToInstance, deleteComplaint } from '../stores/complaintActions';
 import { listUsersWithRoleInstance } from '../stores/userActions';
 import { IconButton, ComplaintValue, LineDivider, ComplaintTextArea, TextButton, FormInputArea, FormSelect } from '../components';
 import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
@@ -20,11 +20,12 @@ const ComplaintDetails = ({
   deliverToInstance,
   complaint,
   listUsersWithRoleInstance,
-  user: userStore
+  user: userStore,
+  deleteComplaint
 }) => {
   const { complaintSelected } = route.params
   const { userInfo } = userLogin
-  const { errors, loading: loadingComplaint, updateSuccess } = complaint
+  const { errors, loading: loadingComplaint, updateSuccess, deleteSuccess } = complaint
   const { users, loading: loadingUser } = userStore
 
   // Form input
@@ -52,7 +53,7 @@ const ComplaintDetails = ({
   // Toast success
   useEffect(() => {
     if (updateSuccess && isFocused) {
-      toast.show('Denuncia actualizado exitosamente', {
+      toast.show('Denuncia actualizada exitosamente', {
         type: 'success',
         placement: 'top',
         duration: 5000,
@@ -62,6 +63,20 @@ const ComplaintDetails = ({
       navigation.goBack()
     }
   }, [updateSuccess, isFocused])
+
+  // Toast delete success
+  useEffect(() => {
+    if (deleteSuccess && isFocused) {
+      toast.show('Denuncia eliminada exitosamente', {
+        type: 'success',
+        placement: 'top',
+        duration: 5000,
+        animationType: 'slide-in',
+      });
+      clearFormInput()
+      navigation.goBack()
+    }
+  }, [isFocused, deleteSuccess])
 
   // Toast error
   useEffect(() => {
@@ -113,6 +128,18 @@ const ComplaintDetails = ({
     }
   }
 
+  async function handleWhatsApp() {
+    const codeCountry = complaintSelected.user?.profile?.phone?.codeCountry || ''
+    const number = complaintSelected.user?.profile?.phone?.value || ''
+
+    let url = `https://wa.me/${codeCountry}${number}`;
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      Linking.openURL(url);
+    }
+  }
+
+
   function isEnableSend() {
     return status !== '0' && user !== '0'
   }
@@ -130,6 +157,24 @@ const ComplaintDetails = ({
         {
           text: 'Enviar',
           onPress: () => onSubmit()
+        },
+      ]
+    );
+  }
+
+  function handleDeleteComplaint() {
+    Alert.alert(
+      constants.alertMsg.title,
+      '¿Estás seguro de eliminar la denuncia de forma permanente?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: () => deleteComplaint(complaintSelected._id)
         },
       ]
     );
@@ -262,7 +307,7 @@ const ComplaintDetails = ({
           {/* Type Sent */}
           <ComplaintValue
             label="Tipo de Envío de Denuncia"
-            value={complaintSelected.typeSent}
+            value={complaintSelected.methodSent}
           />
           <LineDivider />
 
@@ -319,7 +364,11 @@ const ComplaintDetails = ({
           {/* User */}
           <ComplaintValue
             label="Víctima"
-            value={`${complaintSelected.user?.profile?.name} ${complaintSelected.user?.profile?.lastName}`}
+            value={
+              complaintSelected.isComplaintAssisted
+                ? complaintSelected.assistedPerson
+                : `${complaintSelected.user?.profile?.name} ${complaintSelected.user?.profile?.lastName}`
+            }
           />
           <LineDivider />
 
@@ -327,6 +376,9 @@ const ComplaintDetails = ({
           <ComplaintValue
             label="Nº Celular"
             value={`${complaintSelected.user?.profile?.phone?.codeCountry}${complaintSelected.user?.profile?.phone?.value}`}
+            enableOnPress={true}
+            icon={icons.whatsapp}
+            onPress={handleWhatsApp}
           />
           <LineDivider />
 
@@ -335,6 +387,22 @@ const ComplaintDetails = ({
             label="Email"
             value={complaintSelected.user?.email}
           />
+          <LineDivider />
+
+          {/* isAssisted */}
+          <ComplaintValue
+            label="Es Denuncia Asistida"
+            value={complaintSelected.isComplaintAssisted ? 'Si' : 'No'}
+          />
+          <LineDivider />
+
+          {/* assistedPerson */}
+          {complaintSelected.isComplaintAssisted && (
+            <ComplaintValue
+              label="Denuncia Asistida por"
+              value={`${complaintSelected.user?.profile?.name} ${complaintSelected.user?.profile?.lastName}`}
+            />
+          )}
         </View>
       </View>
     );
@@ -423,7 +491,7 @@ const ComplaintDetails = ({
             ...FONTS.body3,
           }}
         >
-          Acción del Instancia
+          Acción de la Instancia
         </Text>
 
         <View style={styles.profileSectionContainer}>
@@ -443,9 +511,9 @@ const ComplaintDetails = ({
             label="Estado"
             value={complaintSelected.instanceAction?.status || '-'}
             textStyle={{
-              color: complaintSelected.intermediaryAction?.status === constants.statusComplaint.success ? COLORS.secondary3
-                : complaintSelected.intermediaryAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
-                  : complaintSelected.intermediaryAction?.status === constants.statusComplaint.rejected
+              color: complaintSelected.instanceAction?.status === constants.statusComplaint.success ? COLORS.secondary3
+                : complaintSelected.instanceAction?.status === constants.statusComplaint.inProgress ? COLORS.primary3
+                  : complaintSelected.instanceAction?.status === constants.statusComplaint.rejected
                     ? COLORS.primary : appTheme?.textColor,
             }}
           />
@@ -577,6 +645,41 @@ const ComplaintDetails = ({
     )
   }
 
+  function renderBtnDeleteComplaint() {
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding,
+        }}>
+        {/* Subtitle */}
+        <Text
+          style={{
+            marginTop: SIZES.radius,
+            color: appTheme?.textColor,
+            ...FONTS.body3,
+          }}
+        >
+          Elimina la denuncia de forma permanente
+        </Text>
+        {/* Delete */}
+        <TextButton
+          label="Eliminar Denuncia"
+          contentContainerStyle={{
+            height: 50,
+            alignItems: 'center',
+            marginTop: SIZES.padding,
+            borderRadius: SIZES.radius,
+            backgroundColor: COLORS.error
+          }}
+          labelStyle={{
+            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+          }}
+          onPress={handleDeleteComplaint}
+        />
+      </View >
+    )
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -606,6 +709,11 @@ const ComplaintDetails = ({
         {/* Deliver to Instance */}
         {userInfo?.role === USER_ROLE_INTERMEDIARY && !complaintSelected.intermediaryAction.user && (
           renderBtnDeliverToInstance()
+        )}
+
+        {/* Delete Complaint if user created was user role intermediary */}
+        {userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && (
+          renderBtnDeleteComplaint()
         )}
       </ScrollView>
     </SafeAreaView>
@@ -640,7 +748,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     deliverToInstance: (complaintId, formData) => dispatch(deliverToInstance(complaintId, formData)),
-    listUsersWithRoleInstance: () => dispatch(listUsersWithRoleInstance())
+    listUsersWithRoleInstance: () => dispatch(listUsersWithRoleInstance()),
+    deleteComplaint: (id) => dispatch(deleteComplaint(id)),
   };
 }
 

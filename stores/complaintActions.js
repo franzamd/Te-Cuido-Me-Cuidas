@@ -10,6 +10,9 @@ export const COMPLAINT_CREATE_FAIL = '@complaint/COMPLAINT_CREATE_FAIL';
 export const COMPLAINT_DELIVER_TO_INSTANCE_REQUEST = '@complaint/COMPLAINT_DELIVER_TO_INSTANCE_REQUEST';
 export const COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS = '@complaint/COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS';
 export const COMPLAINT_DELIVER_TO_INSTANCE_FAIL = '@complaint/COMPLAINT_DELIVER_TO_INSTANCE_FAIL';
+export const COMPLAINT_DELETE_REQUEST = '@complaint/COMPLAINT_DELETE_REQUEST';
+export const COMPLAINT_DELETE_SUCCESS = '@complaint/COMPLAINT_DELETE_SUCCESS';
+export const COMPLAINT_DELETE_FAIL = '@complaint/COMPLAINT_DELETE_FAIL';
 export const COMPLAINT_RESET = '@complaint/COMPLAINT_RESET';
 
 export const getMyComplaints = () => async (dispatch, getState) => {
@@ -98,6 +101,32 @@ export const deliverToInstance = (complaintId, formData) => async (dispatch, get
   } catch (err) {
     dispatch({
       type: COMPLAINT_DELIVER_TO_INSTANCE_FAIL,
+      payload: err.response?.data?.errors
+    });
+  }
+};
+
+// Delete complaint by intermediary
+export const deleteComplaint = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: COMPLAINT_DELETE_REQUEST });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    await axios.delete(`${API_URL}/api/complaints/${id}`, config);
+
+    dispatch({ type: COMPLAINT_DELETE_SUCCESS });
+  } catch (err) {
+    dispatch({
+      type: COMPLAINT_DELETE_FAIL,
       payload: err.response?.data?.errors
     });
   }

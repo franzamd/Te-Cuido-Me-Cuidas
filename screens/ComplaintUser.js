@@ -75,7 +75,7 @@ const ComplaintScreenUser = ({
         latitude: -21.541209974609348,
         longitude: -64.71459756970413
       },
-      typeSent: constants.typeSentComplaint
+      methodSent: constants.methodSentComplaint.form
     }
     await createComplaint(formData)
   }

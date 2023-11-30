@@ -103,14 +103,16 @@ const SignIn = ({
         <View
           style={{
             alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 25
           }}
         >
           <Image
-            source={images.procosi_logo}
+            source={images.logo_aec_procosi}
             resizeMode="contain"
             style={{
-              height: 100,
-              width: 100,
+              height: 70,
               borderRadius: SIZES.radius,
             }}
           />
