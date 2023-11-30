@@ -14,6 +14,8 @@ const edit_profile = require('../assets/icons/edit_profile.png');
 const near_me = require('../assets/icons/near_me.png');
 const whatsapp = require('../assets/icons/whatsapp.png');
 const filter = require('../assets/icons/filter.png');
+const reload = require('../assets/icons/reload.png');
+const close = require('../assets/icons/close.png');
 
 export default {
   back,
@@ -31,5 +33,7 @@ export default {
   edit_profile,
   near_me,
   whatsapp,
-  filter
+  filter,
+  reload,
+  close
 };

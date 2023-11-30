@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '@env';
+import { constants } from '../constants';
 
 export const COMPLAINT_LIST_REQUEST = '@complaint/COMPLAINT_LIST_REQUEST';
 export const COMPLAINT_LIST_SUCCESS = '@complaint/COMPLAINT_LIST_SUCCESS';
@@ -37,7 +38,7 @@ export const getMyComplaints = () => async (dispatch, getState) => {
   }
 };
 
-export const getComplaintsFromUserIntermediary = () => async (dispatch, getState) => {
+export const getComplaintsFromUserIntermediary = (keyword = '') => async (dispatch, getState) => {
   try {
     dispatch({ type: COMPLAINT_LIST_REQUEST });
 
@@ -51,13 +52,14 @@ export const getComplaintsFromUserIntermediary = () => async (dispatch, getState
       }
     };
 
-    const { data } = await axios.get(`${API_URL}/api/complaints/intermediary`, config);
+    const { data } = await axios.get(`${API_URL}/api/complaints/intermediary?keyword=${keyword}`, config);
 
     dispatch({ type: COMPLAINT_LIST_SUCCESS, payload: data?.data });
   } catch (err) {
     dispatch({ type: COMPLAINT_LIST_FAIL, payload: err.response?.data?.errors });
   }
 };
+
 
 export const createComplaint = (formData) => async (dispatch, getState) => {
   try {

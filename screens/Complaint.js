@@ -41,8 +41,8 @@ const Complaint = ({
           <IconButton
             icon={icons.help}
             iconStyle={{
-              width: 35,
-              height: 35,
+              width: 30,
+              height: 30,
               tintColor: appTheme?.tintColor,
             }}
             onPress={() => navigation.navigate('HelpComplaint')}

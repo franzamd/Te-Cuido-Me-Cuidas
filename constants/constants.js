@@ -20,6 +20,14 @@ const typeComplaintOptionsList = [
   { label: 'Violencia Psicológica', value: 'Violencia Psicológica' }
 ];
 
+const complaintFilterOptionsList = [
+  { label: 'Todos', value: '' },
+  { label: 'Urgentes', value: 'buttonEmergency' },
+  { label: 'Derivados a Instancia', value: 'statusInWaitingInstanceAction' },
+  { label: 'Aceptados de Instancia', value: 'statusAcceptInstanceAction' },
+  { label: 'Rechazados', value: 'statusRejected' }
+];
+
 const screens = {
   home: 'Inicio',
   emergency: 'Emergencia',
@@ -53,13 +61,7 @@ const cardMenus = [
     name: 'Historial de Denuncias',
     image: images.stop_violence_2,
     screen: 'ComplaintHistory'
-  },
-  // {
-  //   id: 2,
-  //   name: 'Auxiliar Denuncia',
-  //   image: images.stop_violence_3,
-  //   screen: 'CreateComplaint'
-  // }
+  }
 ];
 
 const offline = {
@@ -108,4 +110,5 @@ export default {
   methodSentComplaint,
   statusComplaint,
   statusOptionsList,
+  complaintFilterOptionsList,
 };

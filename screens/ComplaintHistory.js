@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl, Modal, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 import { connect } from 'react-redux';
@@ -7,7 +7,7 @@ import moment from 'moment'
 import { USER_ROLE_DEFAULT, USER_ROLE_INTERMEDIARY } from '@env';
 
 import { getMyComplaints, getComplaintsFromUserIntermediary } from '../stores/complaintActions';
-import { IconButton, Loading, TextButton } from '../components';
+import { IconButton, Loading, TextButton, FormSelect } from '../components';
 import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
 
 const ComplaintItem = ({ navigation, item, userRole }) => {
@@ -57,7 +57,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
             color: COLORS.gray60,
             ...FONTS.body5,
           }}>
-          Metodo {item.methodSent}
+          {item.statusUserAction === 'Completado' ? 'Completado' : `Acción en espera de ${item.statusUserAction}`}
         </Text>
       </View>
 
@@ -72,16 +72,16 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         {userRole === USER_ROLE_INTERMEDIARY ? (
           // User intermediary
           <TextButton
-            label={item.intermediaryAction.status}
+            label={item.status}
             contentContainerStyle={{
               height: 30,
               width: 80,
               backgroundColor:
-                (item.methodSent === constants.methodSentComplaint.button && item.instanceAction.status !== constants.statusComplaint.success)
+                (item.methodSent === constants.methodSentComplaint.button && item.status !== constants.statusComplaint.success)
                   ? COLORS.blue
-                  : item.intermediaryAction.status === constants.statusComplaint.success
+                  : item.status === constants.statusComplaint.success
                     ? COLORS.secondary3
-                    : item.intermediaryAction.status === constants.statusComplaint.inWaiting
+                    : item.status === constants.statusComplaint.inProgress
                       ? COLORS.primary3
                       : COLORS.primary,
               borderRadius: SIZES.radius,
@@ -142,7 +142,7 @@ const ComplaintHistory = ({
   complaint,
   userLogin,
   getMyComplaints,
-  getComplaintsFromUserIntermediary
+  getComplaintsFromUserIntermediary,
 }) => {
   // store
   const { complaints, errors, loading } = complaint
@@ -150,6 +150,9 @@ const ComplaintHistory = ({
 
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [filter, setFilter] = useState('');
+  const [openFilter, setOpenFilter] = useState(false);
 
   // Fetch my complaints
   // TODO: Delete this example for get initial data then using isFocused for get data
@@ -168,7 +171,7 @@ const ComplaintHistory = ({
 
     // Fetch data complaints
     if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
-      getComplaintsFromUserIntermediary()
+      getComplaintsFromUserIntermediary(filter)
     }
     if (userInfo?.role === USER_ROLE_DEFAULT) {
       getMyComplaints()
@@ -177,18 +180,38 @@ const ComplaintHistory = ({
     setRefreshing(false);
   }, [userInfo]);
 
+
   // Call if screen is display again or return from other screen
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !modalVisible) {
       if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
-        getComplaintsFromUserIntermediary()
+        getComplaintsFromUserIntermediary(filter)
       }
       if (userInfo?.role === USER_ROLE_DEFAULT) {
         getMyComplaints()
       }
     }
-  }, [isFocused]);
+  }, [isFocused, filter, modalVisible]);
 
+  function onBtnReload() {
+    // reset selected form
+    setFilter('')
+  }
+
+  function onReload() {
+    if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
+      getComplaintsFromUserIntermediary(filter)
+    }
+    if (userInfo?.role === USER_ROLE_DEFAULT) {
+      getMyComplaints()
+    }
+  }
+
+
+  function onCloseModal() {
+    setModalVisible(!modalVisible)
+    setOpenFilter(false)
+  }
 
   // Render
   function renderHeader() {
@@ -231,6 +254,16 @@ const ComplaintHistory = ({
             Historial de Denuncias
           </Text>
         </View>
+
+        <IconButton
+          icon={icons.reload}
+          iconStyle={{
+            width: 30,
+            height: 30,
+            tintColor: appTheme?.tintColor,
+          }}
+          onPress={onBtnReload}
+        />
       </View>
     );
   }
@@ -260,6 +293,7 @@ const ComplaintHistory = ({
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
+              marginBottom: SIZES.radius
             }}
           >
             <Text
@@ -290,38 +324,41 @@ const ComplaintHistory = ({
           scrollEventThrottle={16}
           keyboardDismissMode="on-drag"
           ListHeaderComponent={
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
+            userInfo?.role === USER_ROLE_INTERMEDIARY && (
+              <View
                 style={{
-                  flex: 1,
-                  ...FONTS.body4,
-                  color: appTheme?.textColor,
-                }}>
-                {complaints?.length} Resultados encontrados
-              </Text>
-
-              {/* Filter Button */}
-              <IconButton
-                icon={icons.filter}
-                iconStyle={{
-                  width: 20,
-                  height: 20,
-                }}
-                containerStyle={{
-                  width: 40,
-                  height: 40,
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 10,
-                  backgroundColor: COLORS.primary2,
-                }}
-                onPress={() => null}
-              />
-            </View>
+                }}>
+                <Text
+                  style={{
+                    flex: 1,
+                    ...FONTS.body4,
+                    color: appTheme?.textColor,
+                  }}>
+                  {complaints?.length} Resultados encontrados
+                </Text>
+
+                {/* Filter Button */}
+                <IconButton
+                  icon={icons.filter}
+                  iconStyle={{
+                    width: 20,
+                    height: 20,
+                  }}
+                  containerStyle={{
+                    width: 40,
+                    height: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 10,
+                    backgroundColor: COLORS.primary2,
+                  }}
+                  onPress={() => setModalVisible(true)}
+                />
+              </View>
+            )
+
           }
           keyExtractor={(item, index) => `${item._id}`}
           renderItem={({ item, index }) => {
@@ -344,7 +381,7 @@ const ComplaintHistory = ({
               :
               <View
                 style={{
-                  marginTop: SIZES.base,
+                  marginTop: SIZES.radius,
                 }}>
                 <Text
                   style={{
@@ -378,6 +415,58 @@ const ComplaintHistory = ({
     )
   }
 
+  function renderFilterModal() {
+    return (
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={[styles.modalView, {
+            backgroundColor: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+          }]}>
+            {/* Type */}
+            <FormSelect
+              containerStyle={{
+                marginTop: SIZES.radius
+              }}
+              labelStyle={{
+                color: appTheme?.textColor,
+              }}
+              label="Filtro"
+              open={openFilter}
+              value={filter}
+              items={constants.complaintFilterOptionsList}
+              setOpen={setOpenFilter}
+              setValue={setFilter}
+              zIndex={1000}
+              zIndexInverse={1000}
+            />
+
+            <TextButton
+              label="Cerrar"
+              contentContainerStyle={{
+                height: 50,
+                width: "100%",
+                alignItems: 'center',
+                marginTop: 60,
+                borderRadius: SIZES.radius,
+                backgroundColor: COLORS.primary2
+              }}
+              labelStyle={{
+                color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+              }}
+              onPress={onCloseModal}
+            />
+          </View>
+        </View>
+      </Modal >
+    )
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -390,9 +479,38 @@ const ComplaintHistory = ({
 
       {/* Complaints List */}
       {renderComplaintsList()}
+
+      {/* Filter Modal */}
+      {userInfo?.role === USER_ROLE_INTERMEDIARY && (
+        renderFilterModal()
+      )}
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.transparentDarkGray
+  },
+  modalView: {
+    width: 300,
+    margin: SIZES.padding,
+    borderRadius: 20,
+    padding: 35,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+});
 
 function mapStateToProps(state) {
   return {
@@ -405,7 +523,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getMyComplaints: () => dispatch(getMyComplaints()),
-    getComplaintsFromUserIntermediary: () => dispatch(getComplaintsFromUserIntermediary()),
+    getComplaintsFromUserIntermediary: (keyword) => dispatch(getComplaintsFromUserIntermediary(keyword)),
   };
 }
 
