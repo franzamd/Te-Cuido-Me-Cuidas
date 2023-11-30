@@ -6,9 +6,9 @@ import { USER_ROLE_DEFAULT, USER_ROLE_INSTANCE, USER_ROLE_INTERMEDIARY, USER_ROL
 
 import { IconButton, MenuCard } from '../components';
 import { SIZES, FONTS, icons, constants } from '../constants';
-import { ComplaintUser, ComplaintInstance } from '../screens';
+import { CreateComplaint, ComplaintInstance } from '.';
 
-const Complaint = ({
+const IndexComplaint = ({
   appTheme,
   userLogin,
   navigation,
@@ -92,7 +92,7 @@ const Complaint = ({
 
   function renderUserScreen() {
     return (
-      <ComplaintUser navigation={navigation} isFocusedComponent={isFocusedComponent} />
+      <CreateComplaint navigation={navigation} isFocusedComponent={isFocusedComponent} />
     )
   }
 
@@ -131,4 +131,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Complaint)
+export default connect(mapStateToProps, mapDispatchToProps)(IndexComplaint)

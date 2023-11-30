@@ -23,10 +23,15 @@ const typeComplaintOptionsList = [
 const complaintFilterOptionsList = [
   { label: 'Todos', value: '' },
   { label: 'Urgentes', value: 'buttonEmergency' },
+  { label: 'En espera', value: 'statusInWaitingIntermediaryAction' },
   { label: 'Derivados a Instancia', value: 'statusInWaitingInstanceAction' },
   { label: 'Aceptados de Instancia', value: 'statusAcceptInstanceAction' },
   { label: 'Rechazados', value: 'statusRejected' }
 ];
+
+const statusUserAction = {
+  intermediary: 'Intermediario'
+}
 
 const screens = {
   home: 'Inicio',
@@ -54,7 +59,7 @@ const cardMenus = [
     id: 0,
     name: 'Realizar Denuncia',
     image: images.stop_violence_1,
-    screen: 'CreateComplaint'
+    screen: 'CreateComplaintAssisted'
   },
   {
     id: 1,
@@ -111,4 +116,5 @@ export default {
   statusComplaint,
   statusOptionsList,
   complaintFilterOptionsList,
+  statusUserAction
 };

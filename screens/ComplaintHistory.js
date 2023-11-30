@@ -11,6 +11,8 @@ import { IconButton, Loading, TextButton, FormSelect } from '../components';
 import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
 
 const ComplaintItem = ({ navigation, item, userRole }) => {
+  const statusChangedByUser = (item.instanceAction?.status === 'Aceptado' || item.instanceAction?.status === 'Rechazado') ? 'por Instancia' : (item.intermediaryAction?.status === 'Aceptado' || item.intermediaryAction?.status === 'Rechazado') ? 'por Intermediario' : ''
+
   return (
     <TouchableOpacity
       style={{
@@ -52,13 +54,28 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
           }}>
           Enviado el {moment(item.createdAt).format('DD/MM/YYYY, HH:mm a').toString()}
         </Text>
-        <Text
-          style={{
-            color: COLORS.gray60,
-            ...FONTS.body5,
-          }}>
-          {item.statusUserAction === 'Completado' ? 'Completado' : `Acción en espera de ${item.statusUserAction}`}
-        </Text>
+
+        {/* Success or rejected */}
+        {(item.status === 'Aceptado' || item.status === 'Rechazado') ? (
+          <Text
+            style={{
+              color: COLORS.gray60,
+              ...FONTS.body5,
+            }}>
+            {`${item.status} ${statusChangedByUser}`}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              color: COLORS.gray60,
+              ...FONTS.body5,
+            }}>
+            {item.statusUserAction === 'Completado'
+              ? 'Completado'
+              : `Acción en espera de ${item.statusUserAction}`
+            }
+          </Text>
+        )}
       </View>
 
       {/* Status */}
@@ -151,7 +168,7 @@ const ComplaintHistory = ({
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState('statusInWaitingIntermediaryAction');
   const [openFilter, setOpenFilter] = useState(false);
 
   // Fetch my complaints
@@ -194,19 +211,14 @@ const ComplaintHistory = ({
   }, [isFocused, filter, modalVisible]);
 
   function onBtnReload() {
-    // reset selected form
-    setFilter('')
-  }
-
-  function onReload() {
     if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
-      getComplaintsFromUserIntermediary(filter)
+      getComplaintsFromUserIntermediary()
     }
     if (userInfo?.role === USER_ROLE_DEFAULT) {
       getMyComplaints()
     }
+    setFilter('')
   }
-
 
   function onCloseModal() {
     setModalVisible(!modalVisible)

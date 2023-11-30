@@ -120,6 +120,11 @@ const ComplaintDetails = ({
     // TODO: Complete clear store 
   }
 
+  function handleChangeStatus(value) {
+    // reset user selected
+    setUser('0')
+  }
+
   async function handleGPSLocation() {
     let url = `https://www.google.com/maps/search/?api=1&query=${complaintSelected.location.latitude},${complaintSelected.location.longitude}`;
     const supported = await Linking.canOpenURL(url);
@@ -141,7 +146,7 @@ const ComplaintDetails = ({
 
 
   function isEnableSend() {
-    return status !== '0' && user !== '0'
+    return status !== '0' && (user !== '0' || status === 'Rechazado')
   }
 
   function handleSentToDeliver() {
@@ -569,11 +574,13 @@ const ComplaintDetails = ({
           setOpen={setOpenStatus}
           setValue={setStatus}
           zIndex={3000}
+          onChangeValue={value => handleChangeStatus(value)}
           zIndexInverse={3000}
         />
 
         {/* Status */}
         <FormSelect
+          disabled={status === 'Rechazado'}
           containerStyle={{
             marginTop: SIZES.radius
           }}
@@ -712,7 +719,7 @@ const ComplaintDetails = ({
         )}
 
         {/* Delete Complaint if user created was user role intermediary */}
-        {userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && (
+        {userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && complaintSelected.statusUserAction === constants.statusUserAction.intermediary && (
           renderBtnDeleteComplaint()
         )}
       </ScrollView>

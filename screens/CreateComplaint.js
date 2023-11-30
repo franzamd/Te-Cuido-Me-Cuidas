@@ -9,7 +9,7 @@ import { createComplaint, COMPLAINT_RESET } from '../stores/complaintActions';
 import { MenuCard, FormSelect, FormInputArea, TextButton } from '../components';
 import { SIZES, FONTS, COLORS, constants, images } from '../constants';
 
-const ComplaintScreenUser = ({
+const CreateComplaint = ({
   appTheme,
   navigation,
   complaint,
@@ -172,10 +172,6 @@ const ComplaintScreenUser = ({
             onPress={onSubmit}
           />
         </View>
-
-        {/* Menu Card */}
-        {renderMenuCard()}
-
       </ScrollView>
     )
   }
@@ -203,7 +199,7 @@ const ComplaintScreenUser = ({
           </Text>
         </View>
 
-        {/* Historial */}
+        {/* History */}
         <MenuCard
           infoItem={{
             image: images.stop_violence_1,
@@ -219,6 +215,9 @@ const ComplaintScreenUser = ({
     <React.Fragment>
       {/* Complaint Form */}
       {renderFormComplaint()}
+
+      {/* Complaints History */}
+      {renderMenuCard()}
     </React.Fragment>
   );
 };
@@ -237,4 +236,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ComplaintScreenUser)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateComplaint)

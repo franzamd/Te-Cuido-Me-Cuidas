@@ -13,7 +13,7 @@ import { logout, loadUser } from '../stores/authActions';
 import { setSelectedTab } from '../stores/tabActions';
 
 // components
-import { Onboarding, Complaint, Settings, Emergency } from './';
+import { Onboarding, IndexComplaint, Settings, Emergency } from './';
 import {
   Loading,
   // TextButton
@@ -220,7 +220,7 @@ const MainLayout = ({
                     }}
                   >
                     {item.label === constants.screens.home && (
-                      <Complaint
+                      <IndexComplaint
                         navigation={navigation}
                         isFocusedComponent={selectedTab === constants.screens.home}
                       />
