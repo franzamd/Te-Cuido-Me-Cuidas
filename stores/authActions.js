@@ -5,6 +5,7 @@ import { RESET_SELECTED_TAB } from './tabActions'
 import { COMMUNITY_RESET } from './communityActions'
 import { ESTABLISHMENT_RESET } from './establishmentActions'
 import { MUNICIPALITY_RESET } from './municipalityActions'
+import { DEPARTMENT_RESET } from './departmentActions'
 import { COMPLAINT_RESET } from './complaintActions'
 import { USER_RESET } from './userActions'
 
@@ -112,6 +113,7 @@ export const logout = () => async dispatch => {
     dispatch({ type: COMMUNITY_RESET });
     dispatch({ type: ESTABLISHMENT_RESET });
     dispatch({ type: MUNICIPALITY_RESET });
+    dispatch({ type: DEPARTMENT_RESET });
     dispatch({ type: COMPLAINT_RESET });
     dispatch({ type: USER_RESET });
   } catch (error) {

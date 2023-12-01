@@ -36,18 +36,6 @@ const IndexComplaint = ({
         >
           Denuncias
         </Text>
-
-        {(userInfo?.role === USER_ROLE_DEFAULT || userInfo?.role === USER_ROLE_INTERMEDIARY) && (
-          <IconButton
-            icon={icons.help}
-            iconStyle={{
-              width: 30,
-              height: 30,
-              tintColor: appTheme?.tintColor,
-            }}
-            onPress={() => navigation.navigate('HelpComplaint')}
-          />
-        )}
       </View>
     );
   }

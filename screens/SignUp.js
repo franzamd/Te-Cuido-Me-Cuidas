@@ -3,10 +3,10 @@ import { useDispatch } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
-import { DEPARTMENT_LA_PAZ_ID } from '@env';
 
 // actions
 import { register, USER_CLEAR_ERRORS } from '../stores/authActions';
+import { listDepartments, DEPARTMENT_RESET } from '../stores/departmentActions';
 import { listCommunities, COMMUNITY_RESET } from '../stores/communityActions';
 import { listEstablishments, ESTABLISHMENT_RESET } from '../stores/establishmentActions';
 import { listMunicipalities, MUNICIPALITY_RESET } from '../stores/municipalityActions';
@@ -28,7 +28,9 @@ const SingUp = ({
   listCommunities,
   listEstablishments,
   municipality: municipalityStore,
-  listMunicipalities
+  listMunicipalities,
+  listDepartments,
+  department: departmentStore
 }) => {
   const dispatch = useDispatch();
 
@@ -37,6 +39,7 @@ const SingUp = ({
   const { establishments, loading: loadingEstablishment } = establishmentStore
   const { communities, loading: loadingCommunity } = communityStore
   const { municipalities, loading: loadingMunicipality } = municipalityStore
+  const { departments, loading: loadingDepartment } = departmentStore
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,6 +52,14 @@ const SingUp = ({
   const [phone, setPhone] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [openDateOfBirth, setOpenDateOfBirth] = useState(false);
+  const [department, setDepartment] = useState('0');
+  const [openDepartment, setOpenDepartment] = useState(false);
+  const [departmentOptionsList, setDepartmentOptionsList] = useState([
+    {
+      value: '0',
+      label: 'Seleccionar',
+    }
+  ])
   const [municipality, setMunicipality] = useState('0');
   const [openMunicipality, setOpenMunicipality] = useState(false);
   const [municipalityOptionsList, setMunicipalityOptionsList] = useState([
@@ -77,14 +88,34 @@ const SingUp = ({
   ])
 
   useEffect(() => {
-    listMunicipalities(DEPARTMENT_LA_PAZ_ID)
+    listDepartments()
     return () => {
       dispatch({ type: USER_CLEAR_ERRORS })
       dispatch({ type: COMMUNITY_RESET })
       dispatch({ type: ESTABLISHMENT_RESET })
       dispatch({ type: MUNICIPALITY_RESET })
+      dispatch({ type: DEPARTMENT_RESET })
     }
   }, [])
+
+  // Load departments options list
+  useEffect(() => {
+    if (!loadingDepartment && departments) {
+      const items = departments.map((item) => ({
+        _id: item._id,
+        value: item._id,
+        label: `${item.name}`
+      }));
+      setDepartmentOptionsList([
+        {
+          _id: '0',
+          value: '0',
+          label: 'Seleccionar'
+        },
+        ...items
+      ]);
+    }
+  }, [loadingDepartment, departments]);
 
   // Load municipalities options list
   useEffect(() => {
@@ -98,7 +129,7 @@ const SingUp = ({
         {
           _id: '0',
           value: '0',
-          label: 'Seleccione una opción'
+          label: 'Seleccionar'
         },
         ...items
       ]);
@@ -117,7 +148,7 @@ const SingUp = ({
         {
           _id: '0',
           value: '0',
-          label: 'Seleccione una opción'
+          label: 'Seleccionar'
         },
         ...items
       ]);
@@ -136,7 +167,7 @@ const SingUp = ({
         {
           _id: '0',
           value: '0',
-          label: 'Seleccione una opción'
+          label: 'Seleccionar'
         },
         ...items
       ]);
@@ -162,22 +193,20 @@ const SingUp = ({
       phone !== '' &&
       protectionMechanism !== '0' &&
       (protectionMechanism === 'Unidad Educativa' && establishment !== '0') ||
-      (protectionMechanism === 'Comunidad' && community !== '0');
+      (protectionMechanism === 'Comunidad' && community !== '0') &&
+      department !== '0';
   }
 
-  function handleProtectionMechanism(value) {
-    if (value === 'Comunidad') {
-      listCommunities(DEPARTMENT_LA_PAZ_ID, municipality)
-    }
-
-    if (value === 'Unidad Educativa') {
-      listEstablishments(DEPARTMENT_LA_PAZ_ID, municipality)
-    }
-
-    // Reset establishment and community
-    setEstablishment('0')
+  function handleDepartment(value) {
+    // Default municipality establishment and community initial data
+    listMunicipalities(value)
+    setMunicipality('0');
+    setOpenMunicipality(false)
+    setProtectionMechanism('0')
+    setOpenProtectionMechanism(false)
+    setEstablishment('0');
     setOpenEstablishment(false)
-    setCommunity('0')
+    setCommunity('0');
     setOpenCommunity(false)
   }
 
@@ -186,6 +215,22 @@ const SingUp = ({
     setEstablishment('0');
     setOpenEstablishment(false)
     setCommunity('0');
+    setOpenCommunity(false)
+  }
+
+  function handleProtectionMechanism(value) {
+    if (value === 'Comunidad') {
+      listCommunities(department, municipality)
+    }
+
+    if (value === 'Unidad Educativa') {
+      listEstablishments(department, municipality)
+    }
+
+    // Reset establishment and community
+    setEstablishment('0')
+    setOpenEstablishment(false)
+    setCommunity('0')
     setOpenCommunity(false)
   }
 
@@ -202,6 +247,15 @@ const SingUp = ({
   }
 
   async function onSubmit() {
+    // set open options false
+    setOpenGender(false)
+    setOpenDateOfBirth(false)
+    setOpenDepartment(false)
+    setOpenMunicipality(false)
+    setOpenProtectionMechanism(false)
+    setOpenEstablishment(false)
+    setOpenCommunity(false)
+
     const formData = {
       email: email,
       password: password,
@@ -216,6 +270,7 @@ const SingUp = ({
           codeCountry: '+591',
           value: phone
         },
+        department: department !== '0' ? department : '',
         municipality: municipality !== '0' ? municipality : '',
         protectionMechanism: protectionMechanism !== '0' ? protectionMechanism : '',
         community: community !== '0' ? community : '',
@@ -465,6 +520,26 @@ const SingUp = ({
           }
         />
 
+        {/* Department */}
+        <FormSelect
+          containerStyle={{
+            marginTop: SIZES.radius
+          }}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          label="Departmento"
+          errorMsg={errors?.profile?.department}
+          open={openDepartment}
+          value={department}
+          items={departmentOptionsList}
+          setOpen={setOpenDepartment}
+          setValue={setDepartment}
+          onChangeValue={(value) => handleDepartment(value)}
+          zIndex={4000}
+          zIndexInverse={4000}
+        />
+
         {/* Municipality */}
         <FormSelect
           containerStyle={{
@@ -599,12 +674,14 @@ function mapStateToProps(state) {
     community: state.community,
     establishment: state.establishment,
     municipality: state.municipality,
+    department: state.department,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     register: (formData) => dispatch(register(formData)),
+    listDepartments: () => dispatch(listDepartments()),
     listCommunities: (departmentId, municipalityId) => dispatch(listCommunities(departmentId, municipalityId)),
     listEstablishments: (departmentId, municipalityId) => dispatch(listEstablishments(departmentId, municipalityId)),
     listMunicipalities: (departmentId, municipalityId) => dispatch(listMunicipalities(departmentId, municipalityId)),

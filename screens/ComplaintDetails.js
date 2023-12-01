@@ -59,7 +59,6 @@ const ComplaintDetails = ({
         duration: 5000,
         animationType: 'slide-in',
       });
-      clearFormInput()
       navigation.goBack()
     }
   }, [updateSuccess, isFocused])
@@ -73,7 +72,6 @@ const ComplaintDetails = ({
         duration: 5000,
         animationType: 'slide-in',
       });
-      clearFormInput()
       navigation.goBack()
     }
   }, [isFocused, deleteSuccess])
@@ -87,7 +85,6 @@ const ComplaintDetails = ({
         duration: 5000,
         animationType: 'slide-in',
       });
-      clearFormInput()
     }
   }, [errors, isFocused])
 
@@ -103,22 +100,12 @@ const ComplaintDetails = ({
         {
           _id: '0',
           value: '0',
-          label: 'Seleccione una opción'
+          label: 'Seleccionar'
         },
         ...items
       ]);
     }
   }, [loadingUser, users]);
-
-  function clearFormInput() {
-    setStatus('0')
-    setOpenStatus(false)
-    setUser('0')
-    setOpenUser(false)
-    setDescription('')
-    // Clear store
-    // TODO: Complete clear store 
-  }
 
   function handleChangeStatus(value) {
     // reset user selected

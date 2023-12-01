@@ -109,22 +109,6 @@ const Emergency = ({
         >
           Emergencia
         </Text>
-
-        <View
-          style={{
-            flexDirection: 'row',
-          }}
-        >
-          <IconButton
-            icon={icons.help}
-            iconStyle={{
-              width: 30,
-              height: 30,
-              tintColor: appTheme?.tintColor,
-            }}
-            onPress={() => navigation.navigate('HelpComplaint')}
-          />
-        </View>
       </View>
     );
   }
@@ -167,7 +151,7 @@ const Emergency = ({
         {/* Button Emergency Type Physical */}
         <ButtonCard
           infoItem={{
-            image: images.button_violence_sexual,
+            image: images.button_violence_physical,
             title: 'Violencia Física',
             description: 'Pulsa el botón para enviar una denuncia violencia física'
           }}
@@ -178,7 +162,7 @@ const Emergency = ({
         {/* Button Emergency Type Psychological */}
         <ButtonCard
           infoItem={{
-            image: images.button_violence_sexual,
+            image: images.button_violence_psychological,
             title: 'Violencia Psicológica',
             description: 'Pulsa el botón para enviar una denuncia violencia psicológica'
           }}

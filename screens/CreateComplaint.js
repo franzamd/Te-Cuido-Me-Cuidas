@@ -83,96 +83,89 @@ const CreateComplaint = ({
   // Render
   function renderFormComplaint() {
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 150, // add for screen large
+      <View
+        style={{
+          paddingHorizontal: SIZES.padding,
         }}
       >
-        <View
+        <Text
           style={{
-            paddingHorizontal: SIZES.padding,
+            marginTop: SIZES.radius,
+            color: appTheme?.textColor,
+            ...FONTS.body3,
           }}
         >
-          <Text
+          Crea una nueva denuncia
+        </Text>
+        {/* Type */}
+        <FormSelect
+          containerStyle={{
+            marginTop: SIZES.radius
+          }}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          label="Tipo de Violencia"
+          errorMsg={errors?.type}
+          open={openTypeComplaint}
+          value={typeComplaint}
+          items={constants.typeComplaintOptionsList}
+          setOpen={setOpenTypeComplaint}
+          setValue={setTypeComplaint}
+          zIndex={3000}
+          zIndexInverse={3000}
+        />
+
+        {/* Description */}
+        <FormInputArea
+          value={description}
+          label="Descripción"
+          onChange={(value) => setDescription(value)}
+          labelStyle={{
+            color: appTheme?.textColor,
+          }}
+          containerStyle={{
+            marginTop: SIZES.radius,
+          }}
+          errorMsg={errors?.description}
+        />
+
+        {/* Error Message */}
+        {Boolean(errors?.error) && (
+          <View
             style={{
+              flexDirection: 'row',
               marginTop: SIZES.radius,
-              color: appTheme?.textColor,
-              ...FONTS.body3,
-            }}
-          >
-            Crea una nueva denuncia
-          </Text>
-          {/* Type */}
-          <FormSelect
-            containerStyle={{
-              marginTop: SIZES.radius
-            }}
-            labelStyle={{
-              color: appTheme?.textColor,
-            }}
-            label="Tipo de Violencia"
-            errorMsg={errors?.type}
-            open={openTypeComplaint}
-            value={typeComplaint}
-            items={constants.typeComplaintOptionsList}
-            setOpen={setOpenTypeComplaint}
-            setValue={setTypeComplaint}
-            zIndex={3000}
-            zIndexInverse={3000}
-          />
-
-          {/* Description */}
-          <FormInputArea
-            value={description}
-            label="Descripción"
-            onChange={(value) => setDescription(value)}
-            labelStyle={{
-              color: appTheme?.textColor,
-            }}
-            containerStyle={{
-              marginTop: SIZES.radius,
-            }}
-            errorMsg={errors?.description}
-          />
-
-          {/* Error Message */}
-          {Boolean(errors?.error) && (
-            <View
+              justifyContent: 'center'
+            }}>
+            <Text
               style={{
-                flexDirection: 'row',
-                marginTop: SIZES.radius,
-                justifyContent: 'center'
+                color: COLORS.error,
+                ...FONTS.body4
               }}>
-              <Text
-                style={{
-                  color: COLORS.error,
-                  ...FONTS.body4
-                }}>
-                {errors?.error}
-              </Text>
-            </View>
-          )}
+              {errors?.error}
+            </Text>
+          </View>
+        )}
 
-          <TextButton
-            label="Enviar Denuncia"
-            disabled={loading || (isEnableSend() ? false : true)}
-            contentContainerStyle={{
-              height: 50,
-              alignItems: 'center',
-              marginTop: SIZES.padding,
-              borderRadius: SIZES.radius,
-              backgroundColor: isEnableSend()
-                ? COLORS.primary2
-                : COLORS.transparentPrimary,
-            }}
-            labelStyle={{
-              color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
-            }}
-            onPress={onSubmit}
-          />
-        </View>
-      </ScrollView>
+        <TextButton
+          label="Enviar Denuncia"
+          disabled={loading || (isEnableSend() ? false : true)}
+          contentContainerStyle={{
+            height: 50,
+            alignItems: 'center',
+            marginTop: SIZES.padding,
+            borderRadius: SIZES.radius,
+            backgroundColor: isEnableSend()
+              ? COLORS.primary2
+              : COLORS.transparentPrimary,
+          }}
+          labelStyle={{
+            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+          }}
+          onPress={onSubmit}
+        />
+      </View>
     )
   }
 
@@ -213,11 +206,18 @@ const CreateComplaint = ({
 
   return (
     <React.Fragment>
-      {/* Complaint Form */}
-      {renderFormComplaint()}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 150, // add for screen large
+        }}
+      >
+        {/* Complaint Form */}
+        {renderFormComplaint()}
 
-      {/* Complaints History */}
-      {renderMenuCard()}
+        {/* Complaints History */}
+        {renderMenuCard()}
+      </ScrollView>
     </React.Fragment>
   );
 };

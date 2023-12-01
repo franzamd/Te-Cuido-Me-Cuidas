@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { COLORS, FONTS, SIZES, icons } from '../constants';
 
-const SettingValue = ({ appTheme, icon, value, onPress }) => {
+const SettingValue = ({ appTheme, icon, value, onPress, activeIconRight }) => {
   return (
     <TouchableOpacity
       style={{
@@ -55,14 +55,16 @@ const SettingValue = ({ appTheme, icon, value, onPress }) => {
       </View>
 
       {/* Icon */}
-      <Image
-        source={icons.right_circle}
-        style={{
-          width: 25,
-          height: 25,
-          tintColor: appTheme?.tintColor,
-        }}
-      />
+      {activeIconRight && (
+        <Image
+          source={icons.right_circle}
+          style={{
+            width: 25,
+            height: 25,
+            tintColor: appTheme?.tintColor,
+          }}
+        />
+      )}
     </TouchableOpacity>
   );
 };

@@ -145,7 +145,27 @@ const Settings = ({ appTheme, logout, userLogin, navigation }) => {
         <SettingValue
           icon={icons.edit_profile}
           value="Actualizar Perfil"
+          activeIconRight={true}
           onPress={() => navigation.navigate('UpdateProfile')}
+        />
+      </View>
+    );
+  }
+
+  function renderMenuDeleteUser() {
+    return (
+      <View
+        style={[
+          styles.profileSectionContainer,
+          {
+            backgroundColor: appTheme?.backgroundColor1,
+          },
+        ]}
+      >
+        <SettingValue
+          icon={icons.close}
+          value="Eliminar Cuenta"
+          onPress={() => null}
         />
       </View>
     );
@@ -193,6 +213,9 @@ const Settings = ({ appTheme, logout, userLogin, navigation }) => {
 
         {/* Menu Update Profile */}
         {renderMenuUpdateProfile()}
+
+        {/* Menu Delete User */}
+        {renderMenuDeleteUser()}
 
         {/* Logout */}
         {renderMenuLogout()}
