@@ -25,11 +25,15 @@ const complaintReducer = (state = {}, action) => {
         updateSuccess: false,
         deleteSuccess: false
       };
+    case actionTypes.COMPLAINT_CREATE_FAIL_OFFLINE:
+      return { ...state, loading: false, errors: action.payload };
     case actionTypes.COMPLAINT_CREATE_FAIL:
     case actionTypes.COMPLAINT_LIST_FAIL:
     case actionTypes.COMPLAINT_DELIVER_TO_INSTANCE_FAIL:
     case actionTypes.COMPLAINT_DELETE_FAIL:
-      return { loading: false, errors: action.payload };
+    case actionTypes.COMPLAINT_DELETE_FAIL_OFFLINE:
+    case actionTypes.COMPLAINT_DELIVER_TO_INSTANCE_FAIL_OFFLINE:
+      return { ...state, loading: false, errors: action.payload };
     case actionTypes.COMPLAINT_RESET:
       return {};
     default:

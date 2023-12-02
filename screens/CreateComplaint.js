@@ -43,19 +43,9 @@ const CreateComplaint = ({
   // Toast error
   useEffect(() => {
     if (errors && isFocusedComponent && isFocused) {
-      clearFormInput()
+      setIsDisabledButtonsPress(false)
     }
   }, [errors, isFocusedComponent, isFocused])
-
-  // Optional Waiting 10 seg for enable buttons
-  // useEffect(() => {
-  //   if (isDisabledButtonsPress) {
-  //     (async () => {
-  //       await new Promise(resolve => setTimeout(resolve, 10000));
-  //       setIsDisabledButtonsPress(false)
-  //     })()
-  //   }
-  // }, [isDisabledButtonsPress])
 
   const checkPermissionGPS = async () => {
     try {

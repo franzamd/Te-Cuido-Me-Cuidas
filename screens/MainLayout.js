@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux'
 import { View, Text, Image, TouchableWithoutFeedback, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import Animated, {
@@ -11,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 // actions
 import { logout, loadUser } from '../stores/authActions';
 import { setSelectedTab } from '../stores/tabActions';
+import { COMPLAINT_CLEAR_ERROR } from '../stores/complaintActions';
 
 // components
 import { Onboarding, IndexComplaint, Settings, Emergency } from './';
@@ -85,6 +87,8 @@ const MainLayout = ({
   tab,
   navigation
 }) => {
+  const dispatch = useDispatch();
+
   // store
   const { userInfo, loading } = userLogin
   const { selectedTab } = tab
@@ -132,11 +136,9 @@ const MainLayout = ({
   useEffect(() => {
     (async () => {
       await loadUser()
+      // Clear errors data store for redux store
+      dispatch({ type: COMPLAINT_CLEAR_ERROR })
     })()
-
-    return () => {
-
-    }
   }, [])
 
   // Tabs

@@ -5,11 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
 // actions
-import { updateProfile, USER_CLEAR_ERRORS } from '../stores/authActions';
-import { listDepartments, DEPARTMENT_RESET } from '../stores/departmentActions';
-import { listCommunities, COMMUNITY_RESET } from '../stores/communityActions';
-import { listEstablishments, ESTABLISHMENT_RESET } from '../stores/establishmentActions';
-import { listMunicipalities, MUNICIPALITY_RESET } from '../stores/municipalityActions';
+import { updateProfile, USER_PROFILE_CLEAR_ERRORS } from '../stores/authActions';
+import { listDepartments } from '../stores/departmentActions';
+import { listCommunities } from '../stores/communityActions';
+import { listEstablishments } from '../stores/establishmentActions';
+import { listMunicipalities } from '../stores/municipalityActions';
 
 // components
 import { IconButton } from '../components';
@@ -88,11 +88,7 @@ const UpdateProfile = ({
     listDepartments()
 
     return () => {
-      dispatch({ type: USER_CLEAR_ERRORS })
-      dispatch({ type: COMMUNITY_RESET })
-      dispatch({ type: ESTABLISHMENT_RESET })
-      dispatch({ type: MUNICIPALITY_RESET })
-      dispatch({ type: DEPARTMENT_RESET })
+      dispatch({ type: USER_PROFILE_CLEAR_ERRORS })
     }
   }, [])
 

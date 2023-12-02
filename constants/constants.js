@@ -71,7 +71,7 @@ const cardMenus = [
 
 const offline = {
   title: 'Require conexión a internet',
-  description: 'Por favor habilite su conexión a internet para continuar.',
+  description: 'Por favor habilite su conexión a internet para continuar',
 };
 
 const alertMsg = {

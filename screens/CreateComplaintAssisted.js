@@ -4,7 +4,7 @@ import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
-import { createComplaintAssisted, COMPLAINT_RESET } from '../stores/complaintActions';
+import { createComplaintAssisted, COMPLAINT_CLEAR_ERROR } from '../stores/complaintActions';
 import { FormSelect, FormInputArea, TextButton, FormInput, IconButton } from '../components';
 import { SIZES, FONTS, COLORS, constants, icons } from '../constants';
 
@@ -26,7 +26,7 @@ const CreateComplaintAssisted = ({
 
   useEffect(() => {
     return () => {
-      dispatch({ type: COMPLAINT_RESET })
+      dispatch({ type: COMPLAINT_CLEAR_ERROR })
     }
   }, [])
 

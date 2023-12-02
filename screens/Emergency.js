@@ -39,20 +39,9 @@ const Emergency = ({
   // Toast error
   useEffect(() => {
     if (errors && isFocusedComponent) {
-      dispatch({ type: COMPLAINT_CLEAR_ERROR })
       setIsDisabledButtonsPress(false)
     }
   }, [errors, isFocusedComponent])
-
-  // Optional Waiting 10 seg for enable buttons
-  // useEffect(() => {
-  //   if (isDisabledButtonsPress) {
-  //     (async () => {
-  //       await new Promise(resolve => setTimeout(resolve, 10000));
-  //       setIsDisabledButtonsPress(false)
-  //     })()
-  //   }
-  // }, [isDisabledButtonsPress])
 
   const checkPermissionGPS = async () => {
     try {

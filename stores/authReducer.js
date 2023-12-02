@@ -27,15 +27,23 @@ const authReducer = (state = initialState, action) => {
     case actionTypes.USER_LOGIN_FAIL:
     case actionTypes.USER_REGISTER_FAIL:
     case actionTypes.USER_LOGOUT_FAIL:
+    case actionTypes.USER_LOGIN_FAIL_OFFLINE:
+    case actionTypes.USER_REGISTER_FAIL_OFFLINE:
+      return { ...state, loading: false, errors: action.payload };
     case actionTypes.USER_UPDATE_PROFILE_FAIL:
-      return { ...state, loadingUpdate: false, errors: action.payload };
+    case actionTypes.USER_UPDATE_PROFILE_FAIL_OFFLINE:
+      return { ...state, loadingUpdate: false, errors: action.payload, updateSuccess: false };
     case actionTypes.USER_DELETE_ACCOUNT_FAIL:
-      return { ...state, loading: false, errors: action.payload, loadingDelete: false };
+    case actionTypes.USER_DELETE_ACCOUNT_FAIL_OFFLINE:
+      return { ...state, loading: false, errors: action.payload, loadingDelete: false, loadingDelete: false };
     case actionTypes.USER_CLEAR_ERRORS:
-      return { ...state, loading: false, errors: null, updateSuccess: false };
+      return { ...state, loading: false, errors: null };
+    case actionTypes.USER_PROFILE_CLEAR_ERRORS:
+      return { ...state, errors: null, loadingUpdate: false, updateSuccess: false };
     case actionTypes.USER_LOGOUT:
     case actionTypes.USER_LOAD_FAIL:
     case actionTypes.USER_DELETE_ACCOUNT_SUCCESS:
+    case actionTypes.USER_LOGOUT_SUCCESS_OFFLINE:
       return { loading: false, userInfo: null, errors: null, info: null };
     default:
       return state;
