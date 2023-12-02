@@ -17,7 +17,7 @@ import thunk from 'redux-thunk';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ToastProvider } from 'react-native-toast-notifications';
-// import SplashScreen from 'react-native-splash-screen';
+import SplashScreen from 'react-native-splash-screen';
 
 import rootReducer from './stores';
 import {
@@ -60,22 +60,22 @@ LogBox.ignoreLogs([
 ]);
 
 const App = () => {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   // const { store, persistor } = reduxStore();
 
   useEffect(() => {
     // Hide SplashScreen
-    // SplashScreen.hide();
-    setLoading(false);
+    SplashScreen.hide();
+    // setLoading(false);
   }, []);
 
   // Splashscreen loading
-  if (loading) {
-    return (
-      <View style={{ flex: 1 }}>
-        <Loading />
-      </View>)
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={{ flex: 1 }}>
+  //       <Loading />
+  //     </View>)
+  // }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
