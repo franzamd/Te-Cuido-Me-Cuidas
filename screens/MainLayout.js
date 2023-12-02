@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableWithoutFeedback, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import Animated, {
@@ -14,10 +14,7 @@ import { setSelectedTab } from '../stores/tabActions';
 
 // components
 import { Onboarding, IndexComplaint, Settings, Emergency } from './';
-import {
-  Loading,
-  // TextButton
-} from '../components';
+import { Loading } from '../components';
 import { COLORS, SIZES, icons, constants, FONTS } from '../constants';
 
 const TabButton = ({
@@ -83,7 +80,6 @@ const TabButton = ({
 const MainLayout = ({
   appTheme,
   userLogin,
-  // logout,
   loadUser,
   setSelectedTab,
   tab,
@@ -101,6 +97,8 @@ const MainLayout = ({
   const helpTabColor = useSharedValue(COLORS.white);
   const settingsTabFlex = useSharedValue(3);
   const settingsTabColor = useSharedValue(COLORS.white);
+  // complaints
+  const [isDisabledButtonsPress, setIsDisabledButtonsPress] = useState(false)
 
   // Reanimated Animated Style
   const homeFlexStyle = useAnimatedStyle(() => {
@@ -223,16 +221,22 @@ const MainLayout = ({
                       <IndexComplaint
                         navigation={navigation}
                         isFocusedComponent={selectedTab === constants.screens.home}
+                        isDisabledButtonsPress={isDisabledButtonsPress}
+                        setIsDisabledButtonsPress={setIsDisabledButtonsPress}
                       />
                     )}
                     {(item.label === constants.screens.emergency && userInfo.role === 'usuario') && (
                       <Emergency
                         navigation={navigation}
                         isFocusedComponent={selectedTab === constants.screens.emergency}
+                        isDisabledButtonsPress={isDisabledButtonsPress}
+                        setIsDisabledButtonsPress={setIsDisabledButtonsPress}
                       />
                     )}
                     {item.label === constants.screens.settings && (
-                      <Settings navigation={navigation} />
+                      <Settings
+                        navigation={navigation}
+                      />
                     )}
                   </View>
                 );
@@ -257,27 +261,6 @@ const MainLayout = ({
                   {errors.error}
                 </Text>
               </View>
-              {/* TODO: Delete */}
-              {/* <View style={{
-                paddingHorizontal: SIZES.padding,
-                paddingBottom: SIZES.padding * 2
-              }}>
-                <TextButton
-                  label="Cerrar Sesión"
-                  contentContainerStyle={{
-                    height: 50,
-                    alignItems: 'center',
-                    marginTop: SIZES.padding,
-                    borderRadius: SIZES.radius,
-                    backgroundColor:
-                      appTheme?.name === 'dark' ? COLORS.primary2 : COLORS.primary2,
-                  }}
-                  labelStyle={{
-                    color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
-                  }}
-                  onPress={async () => await logout()}
-                />
-              </View> */}
             </React.Fragment>
           )}
 

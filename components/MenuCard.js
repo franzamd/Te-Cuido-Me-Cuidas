@@ -55,7 +55,7 @@ const CardInfo = ({ infoItem }) => {
   );
 };
 
-const MenuCard = ({ containerStyle, infoItem, onPress }) => {
+const MenuCard = ({ disabled, infoItem, onPress }) => {
   return (
     <View
       style={{
@@ -69,6 +69,7 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
       }}
     >
       <TouchableOpacity
+        disabled={disabled}
         style={{
           height: 120,
           width: SIZES.width * 0.88,
@@ -76,7 +77,7 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
           borderRadius: SIZES.radius,
           borderWidth: 2,
           borderColor: COLORS.gray20,
-          ...containerStyle,
+          backgroundColor: disabled ? COLORS.transparentDarkGray : null,
         }}
         onPress={onPress}
       >
@@ -88,6 +89,7 @@ const MenuCard = ({ containerStyle, infoItem, onPress }) => {
             width: 'auto',
             height: '100%',
             borderRadius: SIZES.radius,
+            opacity: disabled ? 0.3 : 1
           }}
         />
 

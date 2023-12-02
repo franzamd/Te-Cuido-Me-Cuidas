@@ -1,92 +1,165 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useToast } from 'react-native-toast-notifications';
 import { connect } from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
 
-import { createComplaint, COMPLAINT_RESET } from '../stores/complaintActions';
-import { IconButton, ButtonCard } from '../components';
-import { SIZES, FONTS, COLORS, icons, images, constants } from '../constants';
+import { createComplaint, COMPLAINT_CLEAR_ERROR } from '../stores/complaintActions';
+import { ButtonCard } from '../components';
+import { SIZES, FONTS, COLORS, images, constants } from '../constants';
 
 const Emergency = ({
   appTheme,
-  navigation,
   complaint,
   createComplaint,
-  isFocusedComponent
+  isFocusedComponent,
+  isDisabledButtonsPress,
+  setIsDisabledButtonsPress
 }) => {
   // store
-  const { errors, loading, createSuccess } = complaint
-  // const [buttonsDisabled, setButtonsDisabled] = useState(false)
+  const { errors, createSuccess } = complaint
 
-  const toast = useToast();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isFocusedComponent) {
+      checkPermissionGPS()
+    }
+  }, [isFocusedComponent])
 
   // Toast success
   useEffect(() => {
     if (createSuccess && isFocusedComponent) {
-      toast.show('Denuncia enviada exitosamente', {
-        type: 'success',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
-      clearFormInput()
+      dispatch({ type: COMPLAINT_CLEAR_ERROR })
+      setIsDisabledButtonsPress(false)
     }
   }, [createSuccess, isFocusedComponent])
 
   // Toast error
   useEffect(() => {
     if (errors && isFocusedComponent) {
-      toast.show('¡Ups! Algo salió mal', {
-        type: 'danger',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
-      clearFormInput()
+      dispatch({ type: COMPLAINT_CLEAR_ERROR })
+      setIsDisabledButtonsPress(false)
     }
   }, [errors, isFocusedComponent])
 
+  // Optional Waiting 10 seg for enable buttons
+  // useEffect(() => {
+  //   if (isDisabledButtonsPress) {
+  //     (async () => {
+  //       await new Promise(resolve => setTimeout(resolve, 10000));
+  //       setIsDisabledButtonsPress(false)
+  //     })()
+  //   }
+  // }, [isDisabledButtonsPress])
+
+  const checkPermissionGPS = async () => {
+    try {
+      // Ask enable precise or approximate location
+      Geolocation.requestAuthorization(
+        success => { },
+        error => { }
+      )
+    } catch (err) { }
+  };
+
   async function handleBtnTypeSexual() {
+    setIsDisabledButtonsPress(true)
+
     const formData = {
       type: constants.typeComplaint.sexual,
-      location: {
-        latitude: -21.541209974609348,
-        longitude: -64.71459756970413
-      },
       methodSent: constants.methodSentComplaint.button
     }
-    await createComplaint(formData)
+
+    // Ask and get precise location
+    Geolocation.getCurrentPosition(
+      async position => {
+        // With location
+        formData.location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+        await createComplaint(formData)
+      },
+      async error => {
+        // Permission precise location denied
+        // Optional Send alert system to enable gps
+        // Send formData without location
+        formData.location = null
+        await createComplaint(formData)
+      },
+      {
+        enableHighAccuracy: true, // gps
+        maximumAge: 0, // get gps no cache
+        timeout: 10000, // 10 seg
+      }
+    )
   }
 
   async function handleBtnTypePhysical() {
+    setIsDisabledButtonsPress(true)
+
     const formData = {
       type: constants.typeComplaint.physical,
-      location: {
-        latitude: -21.541209974609348,
-        longitude: -64.71459756970413
-      },
       methodSent: constants.methodSentComplaint.button
     }
-    await createComplaint(formData)
+
+    // Ask and get precise location
+    Geolocation.getCurrentPosition(
+      async position => {
+        // With location
+        formData.location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+        await createComplaint(formData)
+      },
+      async error => {
+        // Permission precise location denied
+        // Optional Send alert system to enable gps
+        // Send formData without location
+        formData.location = null
+        await createComplaint(formData)
+      },
+      {
+        enableHighAccuracy: true, // gps
+        maximumAge: 0, // get gps no cache
+        timeout: 10000, // 10 seg
+      }
+    )
   }
 
   async function handleBtnTypePsychological() {
+    setIsDisabledButtonsPress(true)
+
     const formData = {
       type: constants.typeComplaint.psychological,
-      location: {
-        latitude: -21.541209974609348,
-        longitude: -64.71459756970413
-      },
       methodSent: constants.methodSentComplaint.button
     }
-    await createComplaint(formData)
-  }
-
-  function clearFormInput() {
-    dispatch({ type: COMPLAINT_RESET })
+    // Ask and get precise location
+    Geolocation.getCurrentPosition(
+      async position => {
+        // With location
+        formData.location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+        await createComplaint(formData)
+      },
+      async error => {
+        // Permission precise location denied
+        // Optional Send alert system to enable gps
+        // Send formData without location
+        formData.location = null
+        await createComplaint(formData)
+      },
+      {
+        enableHighAccuracy: true, // gps
+        maximumAge: 0, // get gps no cache
+        timeout: 10000, // 10 seg
+      }
+    )
   }
 
   // Render
@@ -144,7 +217,7 @@ const Emergency = ({
             title: 'Violencia Sexual',
             description: 'Pulsa el botón para enviar una denuncia de violencia sexual'
           }}
-          disabled={loading}
+          disabled={isDisabledButtonsPress}
           onPress={handleBtnTypeSexual}
         />
 
@@ -155,7 +228,7 @@ const Emergency = ({
             title: 'Violencia Física',
             description: 'Pulsa el botón para enviar una denuncia violencia física'
           }}
-          disabled={false}
+          disabled={isDisabledButtonsPress}
           onPress={handleBtnTypePhysical}
         />
 
@@ -166,9 +239,27 @@ const Emergency = ({
             title: 'Violencia Psicológica',
             description: 'Pulsa el botón para enviar una denuncia violencia psicológica'
           }}
-          disabled={false}
+          disabled={isDisabledButtonsPress}
           onPress={handleBtnTypePsychological}
         />
+
+        {/* Status send */}
+        {isDisabledButtonsPress && (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: SIZES.radius,
+              justifyContent: 'center'
+            }}>
+            <Text
+              style={{
+                color: appTheme?.textColor,
+                ...FONTS.body4
+              }}>
+              Enviando espere por favor..
+            </Text>
+          </View>
+        )}
 
         {/* Error Message */}
         {Boolean(errors?.error) && (

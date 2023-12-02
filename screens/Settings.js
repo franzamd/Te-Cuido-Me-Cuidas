@@ -7,7 +7,12 @@ import { logout } from '../stores/authActions';
 import { IconButton, TextButton, SettingValue } from '../components';
 import { SIZES, FONTS, icons, COLORS, images, constants } from '../constants';
 
-const Settings = ({ appTheme, logout, userLogin, navigation }) => {
+const Settings = ({
+  appTheme,
+  logout,
+  userLogin,
+  navigation
+}) => {
   const { userInfo } = userLogin
 
   function handleLogout() {

@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import moment from 'moment'
 import { USER_ROLE_INTERMEDIARY } from '@env';
-import { useToast } from 'react-native-toast-notifications';
 import { useIsFocused } from '@react-navigation/native';
 
 import { deliverToInstance, deleteComplaint } from '../stores/complaintActions';
@@ -29,7 +28,6 @@ const ComplaintDetails = ({
   const { users, loading: loadingUser } = userStore
 
   // Form input
-  const toast = useToast();
   const [status, setStatus] = useState('0');
   const [openStatus, setOpenStatus] = useState(false);
   const [user, setUser] = useState('0');
@@ -53,12 +51,6 @@ const ComplaintDetails = ({
   // Toast success
   useEffect(() => {
     if (updateSuccess && isFocused) {
-      toast.show('Denuncia actualizada exitosamente', {
-        type: 'success',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
       navigation.goBack()
     }
   }, [updateSuccess, isFocused])
@@ -66,27 +58,9 @@ const ComplaintDetails = ({
   // Toast delete success
   useEffect(() => {
     if (deleteSuccess && isFocused) {
-      toast.show('Denuncia eliminada exitosamente', {
-        type: 'success',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
       navigation.goBack()
     }
   }, [isFocused, deleteSuccess])
-
-  // Toast error
-  useEffect(() => {
-    if (errors && isFocused) {
-      toast.show('¡Ups! Algo salió mal', {
-        type: 'danger',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
-    }
-  }, [errors, isFocused])
 
   // Load users options list
   useEffect(() => {
@@ -304,14 +278,18 @@ const ComplaintDetails = ({
           <LineDivider />
 
           {/* Location */}
-          <ComplaintValue
-            label="Localización"
-            value={'Ver ubicación en Mapa'}
-            enableOnPress={true}
-            icon={icons.near_me}
-            onPress={handleGPSLocation}
-          />
-          <LineDivider />
+          {complaintSelected.location && (
+            <React.Fragment>
+              <ComplaintValue
+                label="Localización"
+                value={'Ver ubicación en Mapa'}
+                enableOnPress={true}
+                icon={icons.near_me}
+                onPress={handleGPSLocation}
+              />
+              <LineDivider />
+            </React.Fragment>
+          )}
 
           {/* Status User Action */}
           <ComplaintValue
@@ -599,24 +577,6 @@ const ComplaintDetails = ({
           errorMsg={errors?.description}
         />
 
-        {/* Error Message */}
-        {Boolean(errors?.error) && (
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: SIZES.radius,
-              justifyContent: 'center'
-            }}>
-            <Text
-              style={{
-                color: COLORS.error,
-                ...FONTS.body4
-              }}>
-              {errors?.error}
-            </Text>
-          </View>
-        )}
-
         {/* Send Btn */}
         <TextButton
           label="Derivar a Instancia"
@@ -655,6 +615,7 @@ const ComplaintDetails = ({
         >
           Elimina la denuncia de forma permanente
         </Text>
+
         {/* Delete */}
         <TextButton
           label="Eliminar Denuncia"
@@ -706,9 +667,30 @@ const ComplaintDetails = ({
         )}
 
         {/* Delete Complaint if user created was user role intermediary */}
-        {userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && complaintSelected.statusUserAction === constants.statusUserAction.intermediary && (
-          renderBtnDeleteComplaint()
+        {(userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && complaintSelected.statusUserAction === constants.statusUserAction.intermediary)
+          || (complaintSelected.intermediaryAction.status === constants.statusComplaint.inWaiting && complaintSelected.user?._id === userInfo?._id)
+          && (
+            renderBtnDeleteComplaint()
+          )}
+
+        {/* Error Message  */}
+        {Boolean(errors?.error) && (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: SIZES.radius,
+              justifyContent: 'center'
+            }}>
+            <Text
+              style={{
+                color: COLORS.error,
+                ...FONTS.body4
+              }}>
+              {errors?.error}
+            </Text>
+          </View>
         )}
+
       </ScrollView>
     </SafeAreaView>
   );

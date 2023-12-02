@@ -20,7 +20,15 @@ import { ToastProvider } from 'react-native-toast-notifications';
 // import SplashScreen from 'react-native-splash-screen';
 
 import rootReducer from './stores';
-import { MainLayout, SignIn, SignUp, ComplaintHistory, ComplaintDetails, CreateComplaintAssisted } from './screens';
+import {
+  MainLayout,
+  SignIn,
+  SignUp,
+  ComplaintHistory,
+  ComplaintDetails,
+  CreateComplaintAssisted,
+  UpdateProfile
+} from './screens';
 import { COLORS } from './constants';
 import { Loading } from './components';
 
@@ -100,6 +108,7 @@ const App = () => {
               <Stack.Screen name="ComplaintHistory" component={ComplaintHistory} />
               <Stack.Screen name="ComplaintDetails" component={ComplaintDetails} />
               <Stack.Screen name="CreateComplaintAssisted" component={CreateComplaintAssisted} />
+              <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
             </Stack.Navigator>
           </NavigationContainer>
         </ToastProvider>

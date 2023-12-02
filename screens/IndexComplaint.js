@@ -4,15 +4,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import { USER_ROLE_DEFAULT, USER_ROLE_INSTANCE, USER_ROLE_INTERMEDIARY, USER_ROLE_ADMIN } from '@env';
 
-import { IconButton, MenuCard } from '../components';
-import { SIZES, FONTS, icons, constants } from '../constants';
+import { MenuCard } from '../components';
+import { SIZES, FONTS, constants } from '../constants';
 import { CreateComplaint, ComplaintInstance } from '.';
 
 const IndexComplaint = ({
   appTheme,
   userLogin,
   navigation,
-  isFocusedComponent
+  isFocusedComponent,
+  isDisabledButtonsPress,
+  setIsDisabledButtonsPress
 }) => {
   const { userInfo } = userLogin
 
@@ -74,13 +76,20 @@ const IndexComplaint = ({
 
   function renderInstanceScreen() {
     return (
-      <ComplaintInstance navigation={navigation} />
+      <ComplaintInstance
+        navigation={navigation}
+      />
     )
   }
 
   function renderUserScreen() {
     return (
-      <CreateComplaint navigation={navigation} isFocusedComponent={isFocusedComponent} />
+      <CreateComplaint
+        navigation={navigation}
+        isFocusedComponent={isFocusedComponent}
+        isDisabledButtonsPress={isDisabledButtonsPress}
+        setIsDisabledButtonsPress={setIsDisabledButtonsPress}
+      />
     )
   }
 

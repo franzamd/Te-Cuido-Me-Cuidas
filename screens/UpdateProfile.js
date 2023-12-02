@@ -5,7 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 
 // actions
-import { register, USER_CLEAR_ERRORS } from '../stores/authActions';
+import { updateProfile, USER_CLEAR_ERRORS } from '../stores/authActions';
+import { SET_SELECTED_TAB } from '../stores/tabActions';
 import { listDepartments, DEPARTMENT_RESET } from '../stores/departmentActions';
 import { listCommunities, COMMUNITY_RESET } from '../stores/communityActions';
 import { listEstablishments, ESTABLISHMENT_RESET } from '../stores/establishmentActions';
@@ -14,14 +15,13 @@ import { listMunicipalities, MUNICIPALITY_RESET } from '../stores/municipalityAc
 // components
 import { IconButton } from '../components';
 import { COLORS, FONTS, icons, SIZES } from '../constants';
-import { utils } from '../utils';
 import { FormInput, TextButton, FormSelect, FormDate } from '../components';
 import { constants } from '../constants';
 
-const SingUp = ({
+const UpdateProfile = ({
   navigation,
   userLogin,
-  register,
+  updateProfile,
   appTheme,
   community: communityStore,
   establishment: establishmentStore,
@@ -35,16 +35,12 @@ const SingUp = ({
   const dispatch = useDispatch();
 
   // store
-  const { userInfo, loading: loadingUser, errors } = userLogin
+  const { userInfo, loading: loadingUser, errors, updateSuccess } = userLogin
   const { establishments, loading: loadingEstablishment } = establishmentStore
   const { communities, loading: loadingCommunity } = communityStore
   const { municipalities, loading: loadingMunicipality } = municipalityStore
   const { departments, loading: loadingDepartment } = departmentStore
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [showPass, setShowPass] = useState(false);
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('0');
@@ -86,9 +82,12 @@ const SingUp = ({
       label: 'Seleccionar',
     }
   ])
+  const [isLoadingDataCompleted, setIsLoadingDataCompleted] = useState(false)
+  const [isTimerForActive, setIsTimerForActive] = useState(true)
 
   useEffect(() => {
     listDepartments()
+
     return () => {
       dispatch({ type: USER_CLEAR_ERRORS })
       dispatch({ type: COMMUNITY_RESET })
@@ -97,6 +96,32 @@ const SingUp = ({
       dispatch({ type: DEPARTMENT_RESET })
     }
   }, [])
+
+  // Optional Waiting 1 seg for enable buttons
+  useEffect(() => {
+    if (userInfo && isTimerForActive && (establishments || communities)) {
+      (async () => {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setIsLoadingDataCompleted(true)
+      })()
+      setIsTimerForActive(false)
+    }
+  }, [userInfo, isTimerForActive, establishments, communities])
+
+  useEffect(() => {
+    if (userInfo?.profile && !isLoadingDataCompleted) {
+      setName(userInfo.profile.name || '')
+      setLastName(userInfo.profile.lastName || '')
+      setGender(userInfo.profile.gender || '0')
+      setDateOfBirth(new Date(userInfo.profile.dateOfBirth) || new Date())
+      setPhone(userInfo.profile.phone?.value || '')
+      setDepartment(userInfo.profile.department?._id || '0')
+      setMunicipality(userInfo.profile.municipality?._id || '0')
+      setProtectionMechanism(userInfo.profile.protectionMechanism || '0')
+      setEstablishment(userInfo.profile.establishment || '0')
+      setCommunity(userInfo.profile?.community || '0')
+    }
+  }, [userInfo, departments, municipalities, establishments, communities])
 
   // Load departments options list
   useEffect(() => {
@@ -174,18 +199,16 @@ const SingUp = ({
     }
   }, [loadingCommunity, communities]);
 
-  // Register user success then return to initial screen
+  // Update profile success then return to initial screen
   useEffect(() => {
-    if (userInfo && !loadingUser) {
-      navigation.popToTop();
+    if (updateSuccess) {
+      dispatch({ type: SET_SELECTED_TAB, payload: 'Inicio' })
+      navigation.goBack();
     }
-  }, [userInfo, loadingUser])
+  }, [updateSuccess])
 
   function isEnableRegister() {
-    return email != '' &&
-      password != '' &&
-      emailError == '' &&
-      name !== '' &&
+    return name !== '' &&
       lastName !== '' &&
       dateOfBirth !== '' &&
       municipality !== '0' &&
@@ -257,27 +280,21 @@ const SingUp = ({
     setOpenCommunity(false)
 
     const formData = {
-      email: email,
-      password: password,
-      password2: password,
-      role: 'usuario',
-      profile: {
-        name: name,
-        lastName: lastName,
-        dateOfBirth: dateOfBirth,
-        gender: gender,
-        phone: {
-          codeCountry: '+591',
-          value: phone
-        },
-        department: department !== '0' ? department : '',
-        municipality: municipality !== '0' ? municipality : '',
-        protectionMechanism: protectionMechanism !== '0' ? protectionMechanism : '',
-        community: community !== '0' ? community : '',
-        establishment: establishment !== '0' ? establishment : ''
-      }
+      name: name,
+      lastName: lastName,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+      phone: {
+        codeCountry: '+591',
+        value: phone
+      },
+      department: department !== '0' ? department : '',
+      municipality: municipality !== '0' ? municipality : '',
+      protectionMechanism: protectionMechanism !== '0' ? protectionMechanism : '',
+      community: community !== '0' ? community : '',
+      establishment: establishment !== '0' ? establishment : ''
     };
-    await register(formData);
+    await updateProfile(formData);
   }
 
   // Render
@@ -308,6 +325,17 @@ const SingUp = ({
             }}
             onPress={() => navigation.goBack()}
           />
+
+          {/* Title */}
+          <Text
+            style={{
+              ...FONTS.h1,
+              marginLeft: SIZES.radius,
+              color: appTheme?.textColor,
+            }}
+          >
+            Actualizar Perfil
+          </Text>
         </View>
       </View>
     );
@@ -330,75 +358,6 @@ const SingUp = ({
           paddingBottom: 150, // add for screen large
         }}
       >
-        {/* Title & Subtitle */}
-        <View
-          style={{
-            marginTop: SIZES.padding,
-            marginBottom: SIZES.padding,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-              color: appTheme?.textColor,
-              marginTop: SIZES.base,
-              ...FONTS.body4,
-            }}
-          >
-            Complete el formulario con sus datos para continuar
-          </Text>
-        </View>
-
-        {/* Email */}
-        <FormInput
-          label="Email"
-          value={email}
-          keyboardType="email-address"
-          autoCompleteType="email"
-          onChange={(value) => {
-            utils.validateEmail(value, setEmailError);
-            setEmail(value);
-          }}
-          labelStyle={{
-            color: appTheme?.textColor,
-          }}
-          errorMsg={emailError}
-        />
-
-        {/* Password */}
-        <FormInput
-          label="Contraseña"
-          value={password}
-          errorMsg={errors?.password}
-          secureTextEntry={!showPass}
-          autoCompleteType="password"
-          containerStyle={{
-            marginTop: SIZES.radius,
-          }}
-          labelStyle={{
-            color: appTheme?.textColor,
-          }}
-          onChange={value => setPassword(value)}
-          appendComponent={
-            <TouchableOpacity
-              style={{
-                width: 40,
-                alignItems: 'flex-end',
-                justifyContent: 'center',
-              }}
-              onPress={() => setShowPass(!showPass)}>
-              <Image
-                source={showPass ? icons.eye_close : icons.eye}
-                style={{
-                  height: 20,
-                  width: 20,
-                  tintColor: COLORS.gray50,
-                }}
-              />
-            </TouchableOpacity>
-          }
-        />
-
         {/* Name */}
         <FormInput
           value={name}
@@ -410,7 +369,7 @@ const SingUp = ({
           containerStyle={{
             marginTop: SIZES.radius,
           }}
-          errorMsg={errors?.profile?.name}
+          errorMsg={errors?.name}
         />
 
         {/* LastName */}
@@ -424,7 +383,7 @@ const SingUp = ({
           containerStyle={{
             marginTop: SIZES.radius,
           }}
-          errorMsg={errors?.profile?.lastName}
+          errorMsg={errors?.lastName}
         />
 
         {/* Gender */}
@@ -436,7 +395,7 @@ const SingUp = ({
             color: appTheme?.textColor,
           }}
           label="Género"
-          errorMsg={errors?.profile?.gender}
+          errorMsg={errors?.gender}
           open={openGender}
           value={gender}
           items={constants.gendersOptionList}
@@ -476,7 +435,7 @@ const SingUp = ({
             containerStyle={{
               flex: 2,
             }}
-            errorMsg={errors?.profile?.phone}
+            errorMsg={errors?.phone}
           />
         </View>
 
@@ -490,7 +449,7 @@ const SingUp = ({
             color: appTheme?.textColor,
           }}
           label="Fecha de Nacimiento"
-          errorMsg={errors?.profile?.dateOfBirth}
+          errorMsg={errors?.dateOfBirth}
           value={dateOfBirth}
           onChange={value => {
             setOpenDateOfBirth(false);
@@ -529,7 +488,7 @@ const SingUp = ({
             color: appTheme?.textColor,
           }}
           label="Departmento"
-          errorMsg={errors?.profile?.department}
+          errorMsg={errors?.department}
           open={openDepartment}
           value={department}
           items={departmentOptionsList}
@@ -549,7 +508,7 @@ const SingUp = ({
             color: appTheme?.textColor,
           }}
           label="Municipio"
-          errorMsg={errors?.profile?.municipality}
+          errorMsg={errors?.municipality}
           open={openMunicipality}
           value={municipality}
           items={municipalityOptionsList}
@@ -570,7 +529,7 @@ const SingUp = ({
             color: appTheme?.textColor,
           }}
           label="Mecanismo de Protección"
-          errorMsg={errors?.profile?.protectionMechanism}
+          errorMsg={errors?.protectionMechanism}
           open={openProtectionMechanism}
           value={protectionMechanism}
           items={constants.protectionMechanismOptionsList}
@@ -592,7 +551,7 @@ const SingUp = ({
               color: appTheme?.textColor,
             }}
             label="Comunidad"
-            errorMsg={errors?.profile?.community}
+            errorMsg={errors?.community}
             open={openCommunity}
             value={community}
             items={communityOptionsList}
@@ -615,7 +574,7 @@ const SingUp = ({
               color: appTheme?.textColor,
             }}
             label="Unidad Educativa"
-            errorMsg={errors?.profile?.establishment}
+            errorMsg={errors?.establishment}
             open={openEstablishment}
             value={establishment}
             items={establishmentOptionsList}
@@ -626,9 +585,8 @@ const SingUp = ({
             zIndexInverse={1000}
           />
         )}
-
         <TextButton
-          label="Ingresar"
+          label="Actualizar"
           disabled={loadingUser || (isEnableRegister() ? false : true)}
           contentContainerStyle={{
             height: 50,
@@ -642,11 +600,11 @@ const SingUp = ({
           labelStyle={{
             color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
           }}
-          onPress={() => onSubmit()}
+          onPress={onSubmit}
         />
 
         {/* Error Message */}
-        {Boolean(errors?.error || errors?.password) && (
+        {Boolean(errors?.error) && (
           <View
             style={{
               flexDirection: 'row',
@@ -658,7 +616,7 @@ const SingUp = ({
                 color: COLORS.error,
                 ...FONTS.body4
               }}>
-              {errors?.error || errors?.password}
+              {errors?.error}
             </Text>
           </View>
         )}
@@ -680,7 +638,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    register: (formData) => dispatch(register(formData)),
+    updateProfile: (formData) => dispatch(updateProfile(formData)),
     listDepartments: () => dispatch(listDepartments()),
     listCommunities: (departmentId, municipalityId) => dispatch(listCommunities(departmentId, municipalityId)),
     listEstablishments: (departmentId, municipalityId) => dispatch(listEstablishments(departmentId, municipalityId)),
@@ -688,4 +646,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingUp);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile);

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import { useToast } from 'react-native-toast-notifications';
 import { useIsFocused } from '@react-navigation/native';
+import Geolocation from '@react-native-community/geolocation';
 
-import { createComplaint, COMPLAINT_RESET } from '../stores/complaintActions';
+import { createComplaint, COMPLAINT_CLEAR_ERROR } from '../stores/complaintActions';
 import { MenuCard, FormSelect, FormInputArea, TextButton } from '../components';
 import { SIZES, FONTS, COLORS, constants, images } from '../constants';
 
@@ -14,27 +14,28 @@ const CreateComplaint = ({
   navigation,
   complaint,
   createComplaint,
-  isFocusedComponent
+  isFocusedComponent,
+  isDisabledButtonsPress,
+  setIsDisabledButtonsPress
 }) => {
   // store
-  const { errors, loading, createSuccess } = complaint
+  const { errors, createSuccess } = complaint
 
-  const toast = useToast();
   const dispatch = useDispatch();
   const [typeComplaint, setTypeComplaint] = useState('0');
   const [description, setDescription] = useState('');
   const [openTypeComplaint, setOpenTypeComplaint] = useState(false);
   const isFocused = useIsFocused();
 
-  // Toast success
+  useEffect(() => {
+    if (isFocusedComponent) {
+      checkPermissionGPS()
+    }
+  }, [isFocusedComponent])
+
+  // clear form
   useEffect(() => {
     if (createSuccess && isFocusedComponent && isFocused) {
-      toast.show('Denuncia enviada exitosamente', {
-        type: 'success',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
       clearFormInput()
     }
   }, [createSuccess, isFocusedComponent, isFocused])
@@ -42,21 +43,36 @@ const CreateComplaint = ({
   // Toast error
   useEffect(() => {
     if (errors && isFocusedComponent && isFocused) {
-      toast.show('¡Ups! Algo salió mal', {
-        type: 'danger',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
       clearFormInput()
     }
   }, [errors, isFocusedComponent, isFocused])
+
+  // Optional Waiting 10 seg for enable buttons
+  // useEffect(() => {
+  //   if (isDisabledButtonsPress) {
+  //     (async () => {
+  //       await new Promise(resolve => setTimeout(resolve, 10000));
+  //       setIsDisabledButtonsPress(false)
+  //     })()
+  //   }
+  // }, [isDisabledButtonsPress])
+
+  const checkPermissionGPS = async () => {
+    try {
+      // Ask enable precise or approximate location
+      Geolocation.requestAuthorization(
+        success => { },
+        error => { }
+      )
+    } catch (err) { }
+  };
 
   function clearFormInput() {
     setTypeComplaint('0')
     setOpenTypeComplaint(false)
     setDescription('')
-    dispatch({ type: COMPLAINT_RESET })
+    dispatch({ type: COMPLAINT_CLEAR_ERROR })
+    setIsDisabledButtonsPress(false)
   }
 
   function isEnableSend() {
@@ -67,17 +83,37 @@ const CreateComplaint = ({
     // hide open list display form
     setOpenTypeComplaint(false)
 
+    setIsDisabledButtonsPress(true)
+
     const formData = {
       type: typeComplaint,
       description,
-      // TODO: Add location gps
-      location: {
-        latitude: -21.541209974609348,
-        longitude: -64.71459756970413
-      },
       methodSent: constants.methodSentComplaint.form
     }
-    await createComplaint(formData)
+
+    // Ask and get precise location
+    Geolocation.getCurrentPosition(
+      async position => {
+        // With location
+        formData.location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+        await createComplaint(formData)
+      },
+      async error => {
+        // Permission precise location denied
+        // Optional Send alert system to enable gps
+        // Send formData without location
+        formData.location = null
+        await createComplaint(formData)
+      },
+      {
+        enableHighAccuracy: true, // gps
+        maximumAge: 0, // get gps no cache
+        timeout: 10000, // 10 seg
+      }
+    )
   }
 
   // Render
@@ -130,6 +166,31 @@ const CreateComplaint = ({
           errorMsg={errors?.description}
         />
 
+        <TextButton
+          label="Enviar Denuncia"
+          disabled={
+            isDisabledButtonsPress
+              ? true :
+              isEnableSend() ? false : true
+          }
+          contentContainerStyle={{
+            height: 50,
+            alignItems: 'center',
+            marginTop: SIZES.padding,
+            borderRadius: SIZES.radius,
+            backgroundColor:
+              isDisabledButtonsPress
+                ? COLORS.transparentPrimary
+                : isEnableSend()
+                  ? COLORS.primary2
+                  : COLORS.transparentPrimary,
+          }}
+          labelStyle={{
+            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+          }}
+          onPress={onSubmit}
+        />
+
         {/* Error Message */}
         {Boolean(errors?.error) && (
           <View
@@ -148,23 +209,23 @@ const CreateComplaint = ({
           </View>
         )}
 
-        <TextButton
-          label="Enviar Denuncia"
-          disabled={loading || (isEnableSend() ? false : true)}
-          contentContainerStyle={{
-            height: 50,
-            alignItems: 'center',
-            marginTop: SIZES.padding,
-            borderRadius: SIZES.radius,
-            backgroundColor: isEnableSend()
-              ? COLORS.primary2
-              : COLORS.transparentPrimary,
-          }}
-          labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
-          }}
-          onPress={onSubmit}
-        />
+        {/* Status send */}
+        {isDisabledButtonsPress && (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: SIZES.radius,
+              justifyContent: 'center'
+            }}>
+            <Text
+              style={{
+                color: appTheme?.textColor,
+                ...FONTS.body4
+              }}>
+              Enviando espere por favor..
+            </Text>
+          </View>
+        )}
       </View>
     )
   }
@@ -194,6 +255,7 @@ const CreateComplaint = ({
 
         {/* History */}
         <MenuCard
+          disabled={isDisabledButtonsPress}
           infoItem={{
             image: images.stop_violence_1,
             name: 'Historial de Denuncias'

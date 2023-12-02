@@ -10,6 +10,7 @@ import Emergency from './Emergency';
 import ComplaintHistory from './ComplaintHistory';
 import ComplaintDetails from './ComplaintDetails';
 import CreateComplaintAssisted from './CreateComplaintAssisted';
+import UpdateProfile from './UpdateProfile';
 
 export {
   MainLayout,
@@ -23,5 +24,6 @@ export {
   Emergency,
   ComplaintHistory,
   ComplaintDetails,
-  CreateComplaintAssisted
+  CreateComplaintAssisted,
+  UpdateProfile
 };

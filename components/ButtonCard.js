@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View,
   TouchableOpacity,
-  Image,
+  ImageBackground,
   Text,
   StyleSheet,
 } from 'react-native';
@@ -37,6 +37,7 @@ const ButtonCard = ({
           borderRadius: SIZES.radius,
           borderWidth: 2,
           borderColor: COLORS.gray20,
+          backgroundColor: disabled ? COLORS.transparentDarkGray : null
         }}
         onPress={onPress}
       >
@@ -80,17 +81,19 @@ const ButtonCard = ({
           {/* Image */}
           <View
             style={{
-              width: '50%'
+              width: '50%',
             }}
           >
-            <Image
+            <ImageBackground
               source={infoItem.image}
               resizeMode="center"
               style={{
-                width: 'auto',
-                height: '100%',
-                borderRadius: SIZES.radius,
+                width: "auto",
+                height: "100%",
+                borderRadius: SIZES.radius
               }}
+              borderRadius={5}
+              imageStyle={{ opacity: disabled ? 0.3 : 1 }}
             />
           </View>
         </View>

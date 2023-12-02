@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-notifications';
+
 import { RESET_SELECTED_TAB } from './tabActions'
 import { COMMUNITY_RESET } from './communityActions'
 import { ESTABLISHMENT_RESET } from './establishmentActions'
@@ -19,6 +21,9 @@ export const USER_LOAD_REQUEST = '@userLogin/USER_LOAD_REQUEST';
 export const USER_LOAD_FROM_STORAGE_SUCCESS = '@userLogin/USER_LOAD_FROM_STORAGE_SUCCESS';
 export const USER_LOAD_SUCCESS = '@userLogin/USER_LOAD_SUCCESS';
 export const USER_LOAD_FAIL = '@userLogin/USER_LOAD_FAIL';
+export const USER_UPDATE_PROFILE_REQUEST = '@userLogin/USER_UPDATE_PROFILE_REQUEST';
+export const USER_UPDATE_PROFILE_SUCCESS = '@userLogin/USER_UPDATE_PROFILE_SUCCESS';
+export const USER_UPDATE_PROFILE_FAIL = '@userLogin/USER_UPDATE_PROFILE_FAIL';
 export const USER_LOGOUT_REQUEST = '@userLogin/USER_LOGOUT_REQUEST';
 export const USER_LOGOUT = '@userLogin/USER_LOGOUT';
 export const USER_LOGOUT_FAIL = '@userLogin/USER_LOGOUT_FAIL';
@@ -99,6 +104,56 @@ export const loadUser = () => async (dispatch, getState) => {
     dispatch({ type: USER_LOAD_FAIL })
   }
 };
+
+export const updateProfile = (formData) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    // get a user and token new
+    const res = await axios.put(`${API_URL}/api/auth/me/profile`, formData, config);
+
+    // Toast
+    Toast.show('Perfil actualizado exitosamente', {
+      type: 'success',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
+    // Add profile field to user
+    const user = {
+      ...userInfo,
+      profile: res.data?.data
+    }
+
+    // Save to localStorage auth data (offline)
+    const data = JSON.stringify(user);
+    await AsyncStorage.setItem('@userLogin', data);
+
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: user });
+  } catch (error) {
+    // Toast
+    Toast.show('¡Ups! Algo salió mal', {
+      type: 'danger',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
+    dispatch({ type: USER_UPDATE_PROFILE_FAIL, payload: error.response?.data?.errors })
+  }
+};
+
 
 export const logout = () => async dispatch => {
   try {

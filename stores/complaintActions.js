@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '@env';
-import { constants } from '../constants';
+import { Toast } from 'react-native-toast-notifications';
 
 export const COMPLAINT_LIST_REQUEST = '@complaint/COMPLAINT_LIST_REQUEST';
 export const COMPLAINT_LIST_SUCCESS = '@complaint/COMPLAINT_LIST_SUCCESS';
@@ -14,6 +14,7 @@ export const COMPLAINT_DELIVER_TO_INSTANCE_FAIL = '@complaint/COMPLAINT_DELIVER_
 export const COMPLAINT_DELETE_REQUEST = '@complaint/COMPLAINT_DELETE_REQUEST';
 export const COMPLAINT_DELETE_SUCCESS = '@complaint/COMPLAINT_DELETE_SUCCESS';
 export const COMPLAINT_DELETE_FAIL = '@complaint/COMPLAINT_DELETE_FAIL';
+export const COMPLAINT_CLEAR_ERROR = '@complaint/COMPLAINT_CLEAR_ERROR';
 export const COMPLAINT_RESET = '@complaint/COMPLAINT_RESET';
 
 export const getMyComplaints = () => async (dispatch, getState) => {
@@ -73,10 +74,27 @@ export const createComplaint = (formData) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     };
+
     await axios.post(`${API_URL}/api/complaints`, formData, config);
+
+    // Toast
+    Toast.show('Denuncia enviada exitosamente', {
+      type: 'success',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
 
     dispatch({ type: COMPLAINT_CREATE_SUCCESS });
   } catch (err) {
+    // Toast
+    Toast.show('¡Ups! Algo salió mal', {
+      type: 'danger',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({ type: COMPLAINT_CREATE_FAIL, payload: err.response?.data?.errors });
   }
 };
@@ -96,12 +114,27 @@ export const createComplaintAssisted = (formData) => async (dispatch, getState) 
     };
     await axios.post(`${API_URL}/api/complaints/assisted`, formData, config);
 
+    // Toast
+    Toast.show('Denuncia enviada exitosamente', {
+      type: 'success',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({ type: COMPLAINT_CREATE_SUCCESS });
   } catch (err) {
+    // Toast
+    Toast.show('¡Ups! Algo salió mal', {
+      type: 'danger',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({ type: COMPLAINT_CREATE_FAIL, payload: err.response?.data?.errors });
   }
 };
-
 
 // user intermediary to user instance
 export const deliverToInstance = (complaintId, formData) => async (dispatch, getState) => {
@@ -120,8 +153,24 @@ export const deliverToInstance = (complaintId, formData) => async (dispatch, get
 
     const { data } = await axios.put(`${API_URL}/api/complaints/${complaintId}/deliver-instance`, formData, config);
 
+    // Toast
+    Toast.show('Denuncia enviada exitosamente', {
+      type: 'success',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({ type: COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS, payload: data?.data });
   } catch (err) {
+    // Toast
+    Toast.show('¡Ups! Algo salió mal', {
+      type: 'danger',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({
       type: COMPLAINT_DELIVER_TO_INSTANCE_FAIL,
       payload: err.response?.data?.errors
@@ -146,8 +195,24 @@ export const deleteComplaint = (id) => async (dispatch, getState) => {
 
     await axios.delete(`${API_URL}/api/complaints/${id}`, config);
 
+    // Toast
+    Toast.show('Denuncia eliminada exitosamente', {
+      type: 'success',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({ type: COMPLAINT_DELETE_SUCCESS });
   } catch (err) {
+    // Toast
+    Toast.show('¡Ups! Algo salió mal', {
+      type: 'danger',
+      placement: 'top',
+      duration: 5000,
+      animationType: 'slide-in',
+    });
+
     dispatch({
       type: COMPLAINT_DELETE_FAIL,
       payload: err.response?.data?.errors

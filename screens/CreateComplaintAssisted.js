@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
-import { useToast } from 'react-native-toast-notifications';
 import { useIsFocused } from '@react-navigation/native';
 
 import { createComplaintAssisted, COMPLAINT_RESET } from '../stores/complaintActions';
@@ -18,7 +17,6 @@ const CreateComplaintAssisted = ({
   // store
   const { errors, loading, createSuccess } = complaint
 
-  const toast = useToast();
   const dispatch = useDispatch();
   const [typeComplaint, setTypeComplaint] = useState('0');
   const [assistedPerson, setAssistedPerson] = useState('');
@@ -35,27 +33,9 @@ const CreateComplaintAssisted = ({
   // Toast success
   useEffect(() => {
     if (createSuccess && isFocused) {
-      toast.show('Denuncia enviada exitosamente', {
-        type: 'success',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
       navigation.goBack()
     }
   }, [createSuccess, isFocused])
-
-  // Toast error
-  useEffect(() => {
-    if (errors && isFocused) {
-      toast.show('¡Ups! Algo salió mal', {
-        type: 'danger',
-        placement: 'top',
-        duration: 5000,
-        animationType: 'slide-in',
-      });
-    }
-  }, [errors, isFocused])
 
   function isEnableSend() {
     return typeComplaint !== '0' && assistedPerson !== ''
@@ -68,11 +48,7 @@ const CreateComplaintAssisted = ({
     const formData = {
       type: typeComplaint,
       description,
-      // TODO: Add location gps
-      location: {
-        latitude: -21.541209974609348,
-        longitude: -64.71459756970413
-      },
+      location: null,
       methodSent: constants.methodSentComplaint.form,
       assistedPerson,
     }
