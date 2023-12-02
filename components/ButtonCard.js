@@ -37,7 +37,7 @@ const ButtonCard = ({
           borderRadius: SIZES.radius,
           borderWidth: 2,
           borderColor: COLORS.gray20,
-          backgroundColor: disabled ? COLORS.transparentDarkGray : null
+          backgroundColor: disabled ? COLORS.transparentDark : null
         }}
         onPress={onPress}
       >

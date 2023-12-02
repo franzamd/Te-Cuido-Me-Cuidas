@@ -21,6 +21,8 @@ export const COLORS = {
   gray80: '#333333',
   gray85: '#242526',
   gray90: '#191919',
+  gray90: '#191919',
+  gray95: '#141414',
   lightGray1: '#DDDDDD',
   blue: '#0077b6',
 
@@ -35,7 +37,8 @@ export const COLORS = {
   transparent: 'transparent',
   transparentPrimary: 'rgba(248, 124, 86, 0.4)',
   transparentWhite1: 'rgba(255, 255, 255, 0.1)',
-  transparentDarkGray: 'rgba(20,20,20, 0.3)',
+  transparentDark: 'rgba(20,20,20, 0.3)',
+  transparentDarkGray: 'rgba(20,20,20, 0.6)',
   transparentBlack1: 'rgba(0, 0, 0, 0.1)',
   transparentSecondaryLight: 'rgba(168, 174, 172, 0.15)',
   transparentBlack7: 'rgba(0, 0, 0, 0.7)',
@@ -65,7 +68,6 @@ export const SIZES = {
   height,
 };
 
-// TODO: Add fonts
 export const FONTS = {
   largeTitle: { fontFamily: 'Roboto-Black', fontSize: SIZES.largeTitle },
   h1: { fontFamily: 'Roboto-Black', fontSize: SIZES.h1, lineHeight: 36 },
@@ -83,7 +85,7 @@ export const FONTS = {
 export const darkTheme = {
   name: 'dark',
   backgroundColor1: COLORS.gray85,
-  backgroundColor2: COLORS.gray90,
+  backgroundColor2: COLORS.gray95,
   backgroundColor3: COLORS.gray90,
   backgroundColor4: COLORS.primary,
   backgroundColor5: COLORS.gray85,
@@ -111,7 +113,7 @@ export const darkTheme = {
 export const lightTheme = {
   name: 'light',
   backgroundColor1: COLORS.white,
-  backgroundColor2: COLORS.primary3,
+  backgroundColor2: COLORS.white,
   backgroundColor3: COLORS.additionalColor11,
   backgroundColor4: COLORS.white,
   backgroundColor5: COLORS.additionalColor13,
@@ -123,7 +125,7 @@ export const lightTheme = {
   borderColor2: COLORS.black,
   inputText: COLORS.black,
   textColor: COLORS.black,
-  textColor2: COLORS.primary,
+  textColor2: COLORS.gray80,
   textColor3: COLORS.gray80,
   textColor4: COLORS.white,
   textColor5: COLORS.black,

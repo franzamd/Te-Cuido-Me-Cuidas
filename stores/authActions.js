@@ -27,6 +27,9 @@ export const USER_UPDATE_PROFILE_FAIL = '@userLogin/USER_UPDATE_PROFILE_FAIL';
 export const USER_LOGOUT_REQUEST = '@userLogin/USER_LOGOUT_REQUEST';
 export const USER_LOGOUT = '@userLogin/USER_LOGOUT';
 export const USER_LOGOUT_FAIL = '@userLogin/USER_LOGOUT_FAIL';
+export const USER_DELETE_ACCOUNT_REQUEST = '@userLogin/USER_DELETE_ACCOUNT_REQUEST';
+export const USER_DELETE_ACCOUNT_SUCCESS = '@userLogin/USER_DELETE_ACCOUNT_SUCCESS';
+export const USER_DELETE_ACCOUNT_FAIL = '@userLogin/USER_DELETE_ACCOUNT_FAIL';
 export const USER_CLEAR_ERRORS = '@userLogin/USER_CLEAR_ERRORS';
 
 export const login = formData => async dispatch => {
@@ -162,7 +165,7 @@ export const logout = () => async dispatch => {
     await AsyncStorage.removeItem('@userLogin');
     // Remove from api
     await axios.get(`${API_URL}/api/auth/logout`);
-    // Clear data
+    // Clear store
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: RESET_SELECTED_TAB });
     dispatch({ type: COMMUNITY_RESET });
@@ -173,6 +176,40 @@ export const logout = () => async dispatch => {
     dispatch({ type: USER_RESET });
   } catch (error) {
     dispatch({ type: USER_LOGOUT_FAIL, payload: error.response?.data?.errors });
+  }
+};
+
+export const deleteAccount = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_DELETE_ACCOUNT_REQUEST });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    await axios.delete(`${API_URL}/api/auth/me`, config);
+    dispatch({ type: USER_DELETE_ACCOUNT_SUCCESS });
+
+    // Remove data from localStorage
+    await AsyncStorage.removeItem('@userLogin');
+
+    // Clear store
+    dispatch({ type: USER_LOGOUT });
+    dispatch({ type: RESET_SELECTED_TAB });
+    dispatch({ type: COMMUNITY_RESET });
+    dispatch({ type: ESTABLISHMENT_RESET });
+    dispatch({ type: MUNICIPALITY_RESET });
+    dispatch({ type: DEPARTMENT_RESET });
+    dispatch({ type: COMPLAINT_RESET });
+    dispatch({ type: USER_RESET });
+  } catch (error) {
+    dispatch({ type: USER_DELETE_ACCOUNT_FAIL, payload: error.response?.data?.errors });
   }
 };
 
@@ -200,56 +237,5 @@ export const logout = () => async dispatch => {
 //       type: FORGOT_PASSWORD_FAILURE,
 //       payload: error.response?.data?.errors,
 //     });
-//   }
-// };
-
-
-// export const deleteAccount = () => async dispatch => {
-//   try {
-//     // Remove from api
-//     await axios.delete(`${API_URL}/api/auth/delete`);
-
-//     // Remove from localStorage
-//     await AsyncStorage.removeItem('@userLogin');
-
-//     dispatch({
-//       type: LOGOUT,
-//     });
-//   } catch (error) {
-//     // If failed network status
-//     if (error.message === 'Network Error') {
-//       return {
-//         isNetworkFailed: true,
-//       };
-//     }
-
-//     return {
-//       success: false,
-//       error: error.response?.data?.errors?.error,
-//     };
-//   }
-// };
-
-// export const updateProfile = formData => async dispatch => {
-//   try {
-//     await axios.put(
-//       `${API_URL}/api/auth/profile/update`,
-//       formData,
-//       configJSON,
-//     );
-//     dispatch(await loadUser());
-//   } catch (error) {
-//     // If failed network status
-//     if (error.message === 'Network Error') {
-//       return {
-//         isNetworkFailed: true,
-//       };
-//     }
-
-//     dispatch({
-//       type: PROFILE_ERROR,
-//       payload: error.response?.data?.errors,
-//     });
-//     return error;
 //   }
 // };

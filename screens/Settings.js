@@ -1,19 +1,32 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
+import { TERMS_AND_CONDITIONS } from '@env'
 
-import { logout } from '../stores/authActions';
+import { toggleTheme } from '../stores/themeActions';
+import { logout, deleteAccount } from '../stores/authActions';
 import { IconButton, TextButton, SettingValue } from '../components';
 import { SIZES, FONTS, icons, COLORS, images, constants } from '../constants';
 
 const Settings = ({
   appTheme,
+  toggleTheme,
   logout,
   userLogin,
-  navigation
+  navigation,
+  deleteAccount
 }) => {
-  const { userInfo } = userLogin
+  const { userInfo, errors } = userLogin
+
+  // Handler
+  function toggleThemeHandler() {
+    if (appTheme?.name == 'light') {
+      toggleTheme('dark');
+    } else {
+      toggleTheme('light');
+    }
+  }
 
   function handleLogout() {
     Alert.alert(
@@ -29,6 +42,26 @@ const Settings = ({
           text: 'Cerrar Sesión',
           onPress: () => {
             logout();
+          },
+        },
+      ]
+    );
+  }
+
+  function handleDeleteAccount() {
+    Alert.alert(
+      constants.alertMsg.title,
+      'Al confirmar esta acción, su cuenta y todos los datos e información asociados serán eliminados de manera permanente de nuestra base de datos. ¿Está seguro de que desea proceder con la eliminación de su cuenta?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar Cuenta',
+          onPress: () => {
+            deleteAccount()
           },
         },
       ]
@@ -66,7 +99,7 @@ const Settings = ({
             iconStyle={{
               tintColor: appTheme?.tintColor,
             }}
-          // onPress={() => toggleThemeHandler()}
+            onPress={() => toggleThemeHandler()}
           />
         </View>
       </View>
@@ -126,7 +159,7 @@ const Settings = ({
           </Text>
           <Text
             style={{
-              color: COLORS.gray90,
+              color: appTheme?.textColor3,
               ...FONTS.body4,
             }}
           >
@@ -150,8 +183,31 @@ const Settings = ({
         <SettingValue
           icon={icons.edit_profile}
           value="Actualizar Perfil"
-          activeIconRight={true}
           onPress={() => navigation.navigate('UpdateProfile')}
+        />
+      </View>
+    );
+  }
+
+  function renderMenuTermsAndConditions() {
+    return (
+      <View
+        style={[
+          styles.profileSectionContainer,
+          {
+            backgroundColor: appTheme?.backgroundColor1,
+          },
+        ]}
+      >
+        <SettingValue
+          icon={icons.terms_and_conditions}
+          value="Términos y Condiciones"
+          onPress={async () => {
+            const supported = await Linking.canOpenURL(TERMS_AND_CONDITIONS)
+            if (supported) {
+              Linking.openURL(TERMS_AND_CONDITIONS)
+            }
+          }}
         />
       </View>
     );
@@ -170,7 +226,7 @@ const Settings = ({
         <SettingValue
           icon={icons.close}
           value="Eliminar Cuenta"
-          onPress={() => null}
+          onPress={handleDeleteAccount}
         />
       </View>
     );
@@ -178,21 +234,27 @@ const Settings = ({
 
   function renderMenuLogout() {
     return (
-      <TextButton
-        label="Cerrar Sesión"
-        contentContainerStyle={{
-          height: 50,
-          alignItems: 'center',
+      <View
+        style={{
           marginTop: SIZES.padding,
-          borderRadius: SIZES.radius,
-          backgroundColor:
-            appTheme?.name === 'dark' ? COLORS.primary2 : COLORS.primary2,
         }}
-        labelStyle={{
-          color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
-        }}
-        onPress={handleLogout}
-      />
+      >
+        <TextButton
+          label="Cerrar Sesión"
+          contentContainerStyle={{
+            height: 50,
+            alignItems: 'center',
+            marginTop: SIZES.padding,
+            borderRadius: SIZES.radius,
+            backgroundColor:
+              appTheme?.name === 'dark' ? COLORS.primary2 : COLORS.primary2,
+          }}
+          labelStyle={{
+            color: COLORS.white
+          }}
+          onPress={handleLogout}
+        />
+      </View>
     )
   }
 
@@ -219,11 +281,32 @@ const Settings = ({
         {/* Menu Update Profile */}
         {renderMenuUpdateProfile()}
 
+        {/* Menu Update Profile */}
+        {renderMenuTermsAndConditions()}
+
         {/* Menu Delete User */}
         {renderMenuDeleteUser()}
 
         {/* Logout */}
         {renderMenuLogout()}
+
+        {/* Error Message */}
+        {Boolean(errors?.error) && (
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: SIZES.radius,
+              justifyContent: 'center'
+            }}>
+            <Text
+              style={{
+                color: COLORS.error,
+                ...FONTS.body4
+              }}>
+              {errors?.error}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -248,7 +331,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => dispatch(logout())
+    toggleTheme: themeType => dispatch(toggleTheme(themeType)),
+    logout: () => dispatch(logout()),
+    deleteAccount: () => dispatch(deleteAccount()),
   };
 }
 

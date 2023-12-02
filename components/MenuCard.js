@@ -47,7 +47,7 @@ const CardInfo = ({ infoItem }) => {
     <View
       style={{
         ...styles.recipeCardContainer,
-        backgroundColor: COLORS.transparentDarkGray,
+        backgroundColor: COLORS.transparentDark,
       }}
     >
       <CardDetails infoItem={infoItem} />
@@ -77,7 +77,7 @@ const MenuCard = ({ disabled, infoItem, onPress }) => {
           borderRadius: SIZES.radius,
           borderWidth: 2,
           borderColor: COLORS.gray20,
-          backgroundColor: disabled ? COLORS.transparentDarkGray : null,
+          backgroundColor: disabled ? COLORS.transparentDark : null,
         }}
         onPress={onPress}
       >

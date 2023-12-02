@@ -10,7 +10,7 @@ import { getMyComplaints, getComplaintsFromUserIntermediary } from '../stores/co
 import { IconButton, Loading, TextButton, FormSelect } from '../components';
 import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
 
-const ComplaintItem = ({ navigation, item, userRole }) => {
+const ComplaintItem = ({ appTheme, navigation, item, userRole }) => {
   const statusChangedByUser = (item.instanceAction?.status === 'Aceptado' || item.instanceAction?.status === 'Rechazado') ? 'por Instancia' : (item.intermediaryAction?.status === 'Aceptado' || item.intermediaryAction?.status === 'Rechazado') ? 'por Intermediario' : ''
 
   return (
@@ -42,14 +42,14 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         <Text
           style={{
             ...FONTS.h3,
-            color: COLORS.gray80,
+            color: appTheme?.textColor2,
             ...FONTS.body5,
           }}>
           Código {item.uid}
         </Text>
         <Text
           style={{
-            color: COLORS.gray60,
+            color: appTheme?.textColor3,
             ...FONTS.body5,
           }}>
           Enviado el {moment(item.createdAt).format('DD/MM/YYYY, HH:mm a').toString()}
@@ -59,7 +59,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         {(item.status === 'Aceptado' || item.status === 'Rechazado') ? (
           <Text
             style={{
-              color: COLORS.gray60,
+              color: appTheme?.textColor3,
               ...FONTS.body5,
             }}>
             {`${item.status} ${statusChangedByUser}`}
@@ -67,7 +67,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         ) : (
           <Text
             style={{
-              color: COLORS.gray60,
+              color: appTheme?.textColor3,
               ...FONTS.body5,
             }}>
             {item.statusUserAction === 'Completado'
@@ -128,7 +128,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
                       : COLORS.primary,
               borderRadius: SIZES.radius,
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
             labelStyle={{
               color: COLORS.white,
@@ -141,7 +141,7 @@ const ComplaintItem = ({ navigation, item, userRole }) => {
         {item.methodSent === constants.methodSentComplaint.button && (
           <Text
             style={{
-              color: COLORS.gray60,
+              color: appTheme?.textColor2,
               fontWeight: 'bold',
               ...FONTS.body5,
             }}>
@@ -212,12 +212,11 @@ const ComplaintHistory = ({
 
   function onBtnReload() {
     if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
-      getComplaintsFromUserIntermediary()
+      getComplaintsFromUserIntermediary(filter)
     }
     if (userInfo?.role === USER_ROLE_DEFAULT) {
       getMyComplaints()
     }
-    setFilter('')
   }
 
   function onCloseModal() {
@@ -333,6 +332,7 @@ const ComplaintHistory = ({
           snapToAlignment="center"
           snapToInterval={SIZES.width}
           data={complaints}
+          showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           keyboardDismissMode="on-drag"
           ListHeaderComponent={
@@ -380,6 +380,7 @@ const ComplaintHistory = ({
                 title={item.type}
                 item={item}
                 userRole={userInfo?.role}
+                appTheme={appTheme}
               />
             )
           }}
@@ -397,7 +398,7 @@ const ComplaintHistory = ({
                 }}>
                 <Text
                   style={{
-                    color: COLORS.gray60,
+                    color: appTheme?.textColor3,
                     ...FONTS.body4,
                   }}>
                   Lo sentimos no se encontraron denuncias registrados
@@ -438,7 +439,7 @@ const ComplaintHistory = ({
         }}>
         <View style={styles.centeredView}>
           <View style={[styles.modalView, {
-            backgroundColor: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            backgroundColor: appTheme?.backgroundColor2
           }]}>
             {/* Type */}
             <FormSelect
@@ -469,7 +470,7 @@ const ComplaintHistory = ({
                 backgroundColor: COLORS.primary2
               }}
               labelStyle={{
-                color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+                color: COLORS.white,
               }}
               onPress={onCloseModal}
             />

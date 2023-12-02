@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 // actions
 import { updateProfile, USER_CLEAR_ERRORS } from '../stores/authActions';
-import { SET_SELECTED_TAB } from '../stores/tabActions';
 import { listDepartments, DEPARTMENT_RESET } from '../stores/departmentActions';
 import { listCommunities, COMMUNITY_RESET } from '../stores/communityActions';
 import { listEstablishments, ESTABLISHMENT_RESET } from '../stores/establishmentActions';
@@ -202,7 +201,6 @@ const UpdateProfile = ({
   // Update profile success then return to initial screen
   useEffect(() => {
     if (updateSuccess) {
-      dispatch({ type: SET_SELECTED_TAB, payload: 'Inicio' })
       navigation.goBack();
     }
   }, [updateSuccess])
@@ -598,7 +596,7 @@ const UpdateProfile = ({
               : COLORS.transparentPrimary,
           }}
           labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            color: COLORS.white
           }}
           onPress={onSubmit}
         />

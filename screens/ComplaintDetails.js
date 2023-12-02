@@ -591,7 +591,7 @@ const ComplaintDetails = ({
               : COLORS.transparentPrimary,
           }}
           labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            color: COLORS.white
           }}
           onPress={handleSentToDeliver}
         />
@@ -627,7 +627,7 @@ const ComplaintDetails = ({
             backgroundColor: COLORS.error
           }}
           labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            color: COLORS.white
           }}
           onPress={handleDeleteComplaint}
         />

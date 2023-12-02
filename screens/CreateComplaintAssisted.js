@@ -194,7 +194,7 @@ const CreateComplaintAssisted = ({
               : COLORS.transparentPrimary,
           }}
           labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            color: COLORS.white
           }}
           onPress={onSubmit}
         />

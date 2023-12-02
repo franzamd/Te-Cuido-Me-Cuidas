@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 
-import { SIZES, FONTS, images } from '../constants';
+import { SIZES, FONTS, images, COLORS } from '../constants';
 
 const ComplaintScreenInstance = ({ appTheme, navigation }) => {
   return (
@@ -12,7 +12,8 @@ const ComplaintScreenInstance = ({ appTheme, navigation }) => {
       <View
         style={{
           alignItems: 'center',
-          padding: SIZES.padding
+          padding: SIZES.padding,
+          gap: SIZES.padding
         }}
       >
         <Image
@@ -20,8 +21,9 @@ const ComplaintScreenInstance = ({ appTheme, navigation }) => {
           resizeMode="contain"
           style={{
             height: 100,
-            width: 100,
+            width: "100%",
             borderRadius: SIZES.radius,
+            backgroundColor: COLORS.white,
           }} />
         <Text
           style={{

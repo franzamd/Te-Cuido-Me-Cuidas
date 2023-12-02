@@ -105,15 +105,17 @@ const SignIn = ({
             alignItems: 'center',
             flexDirection: 'row',
             justifyContent: 'center',
-            gap: 25
+            gap: 25,
+            marginTop: SIZES.padding
           }}
         >
           <Image
             source={images.logo_aec_procosi}
             resizeMode="contain"
             style={{
+              width: "100%",
               height: 70,
-              borderRadius: SIZES.radius,
+              borderRadius: SIZES.padding,
             }}
           />
         </View>
@@ -226,7 +228,7 @@ const SignIn = ({
               appTheme?.name === 'dark' ? COLORS.secondary : COLORS.secondary4,
           }}
           labelStyle={{
-            color: appTheme?.name === 'dark' ? COLORS.black : COLORS.white,
+            color: COLORS.white
           }}
           onPress={() => {
             navigation.navigate('SignUp');

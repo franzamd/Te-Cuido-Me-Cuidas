@@ -86,7 +86,7 @@ const MainLayout = ({
   navigation
 }) => {
   // store
-  const { userInfo, loading, errors } = userLogin
+  const { userInfo, loading } = userLogin
   const { selectedTab } = tab
 
   const flatListRef = React.useRef();
@@ -243,26 +243,6 @@ const MainLayout = ({
               }}
             />
           </View>
-
-          {/* Errors TODO: Delete ! */}
-          {Boolean(errors) && (
-            <React.Fragment>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: SIZES.radius,
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.error,
-                    ...FONTS.body3
-                  }}>
-                  {errors.error}
-                </Text>
-              </View>
-            </React.Fragment>
-          )}
 
           {/* Footer */}
           <View

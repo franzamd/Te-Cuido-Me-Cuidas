@@ -16,6 +16,7 @@ const whatsapp = require('../assets/icons/whatsapp.png');
 const filter = require('../assets/icons/filter.png');
 const reload = require('../assets/icons/reload.png');
 const close = require('../assets/icons/close.png');
+const terms_and_conditions = require('../assets/icons/terms_and_conditions.png');
 
 export default {
   back,
@@ -35,5 +36,6 @@ export default {
   whatsapp,
   filter,
   reload,
-  close
+  close,
+  terms_and_conditions
 };

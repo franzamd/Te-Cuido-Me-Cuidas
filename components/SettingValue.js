@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 
-import { COLORS, FONTS, SIZES, icons } from '../constants';
+import { COLORS, FONTS, SIZES } from '../constants';
 
-const SettingValue = ({ appTheme, icon, value, onPress, activeIconRight }) => {
+const SettingValue = ({ appTheme, icon, value, onPress }) => {
   return (
     <TouchableOpacity
       style={{
@@ -53,18 +53,6 @@ const SettingValue = ({ appTheme, icon, value, onPress, activeIconRight }) => {
           {value}
         </Text>
       </View>
-
-      {/* Icon */}
-      {activeIconRight && (
-        <Image
-          source={icons.right_circle}
-          style={{
-            width: 25,
-            height: 25,
-            tintColor: appTheme?.tintColor,
-          }}
-        />
-      )}
     </TouchableOpacity>
   );
 };
