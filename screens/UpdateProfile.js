@@ -92,11 +92,11 @@ const UpdateProfile = ({
     }
   }, [])
 
-  // Optional Waiting 1 seg for enable buttons
+  // Optional Waiting 3 seg for enable buttons
   useEffect(() => {
     if (userInfo && isTimerForActive && (establishments || communities)) {
       (async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
         setIsLoadingDataCompleted(true)
       })()
       setIsTimerForActive(false)

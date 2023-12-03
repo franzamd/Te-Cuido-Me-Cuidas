@@ -89,7 +89,7 @@ const Settings = ({
           Ajustes
         </Text>
 
-        <View
+        {/* <View
           style={{
             flexDirection: 'row',
           }}
@@ -101,7 +101,7 @@ const Settings = ({
             }}
             onPress={() => toggleThemeHandler()}
           />
-        </View>
+        </View> */}
       </View>
     );
   }

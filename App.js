@@ -5,7 +5,7 @@ import {
   StatusBar,
   Appearance,
 } from 'react-native';
-// import {API_URL} from '@env';
+import { API_URL } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +31,7 @@ import {
 } from './screens';
 import { COLORS } from './constants';
 
-// console.log('API_URL', API_URL);
+console.log('API connected:', API_URL);
 
 const Stack = createNativeStackNavigator();
 
