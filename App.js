@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -39,7 +39,8 @@ const Stack = createNativeStackNavigator();
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['theme', 'tab', 'userLogin'],
+  whitelist: ['complaint', 'department'], // Things you want to persist
+  blacklist: ['theme', 'tab', 'userLogin', 'municipality', 'establishment', 'community', 'user'], // Things you don't want to persist
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const reduxStore = () => {
@@ -63,12 +64,14 @@ const App = () => {
 
   // Hide SplashScreen
   useEffect(() => {
+    // persistor.purge()
     SplashScreen.hide();
   }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
+        {/* Active for change url api server with localhost  */}
         <PersistGate loading={null} persistor={persistor}>
           <ToastProvider>
             <StatusBar

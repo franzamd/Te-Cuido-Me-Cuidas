@@ -10,9 +10,9 @@ export const listDepartments = () => async (dispatch) => {
   try {
     dispatch({ type: DEPARTMENT_LIST_REQUEST });
 
-    const { data } = await axios.get(`${API_URL}/api/departments`);
+    const res = await axios.get(`${API_URL}/api/departments`);
 
-    dispatch({ type: DEPARTMENT_LIST_SUCCESS, payload: data?.data });
+    dispatch({ type: DEPARTMENT_LIST_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     dispatch({ type: DEPARTMENT_LIST_FAIL, payload: err.response?.data?.errors });
   }

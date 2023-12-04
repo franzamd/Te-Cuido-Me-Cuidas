@@ -10,9 +10,9 @@ export const listEstablishments = (departmentId, municipalityId) => async (dispa
   try {
     dispatch({ type: ESTABLISHMENT_LIST_REQUEST });
 
-    const { data } = await axios.get(`${API_URL}/api/departments/${departmentId}/municipalities/${municipalityId}/establishments`);
+    const res = await axios.get(`${API_URL}/api/departments/${departmentId}/municipalities/${municipalityId}/establishments`);
 
-    dispatch({ type: ESTABLISHMENT_LIST_SUCCESS, payload: data?.data });
+    dispatch({ type: ESTABLISHMENT_LIST_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     dispatch({ type: ESTABLISHMENT_LIST_FAIL, payload: err.response?.data?.errors });
   }

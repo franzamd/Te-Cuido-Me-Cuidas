@@ -35,9 +35,9 @@ export const getMyComplaints = () => async (dispatch, getState) => {
       }
     };
 
-    const { data } = await axios.get(`${API_URL}/api/complaints/me`, config);
+    const res = await axios.get(`${API_URL}/api/complaints/me`, config);
 
-    dispatch({ type: COMPLAINT_LIST_SUCCESS, payload: data?.data });
+    dispatch({ type: COMPLAINT_LIST_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     dispatch({ type: COMPLAINT_LIST_FAIL, payload: err.response?.data?.errors });
   }
@@ -57,9 +57,9 @@ export const getComplaintsFromUserIntermediary = (keyword = '') => async (dispat
       }
     };
 
-    const { data } = await axios.get(`${API_URL}/api/complaints/intermediary?keyword=${keyword}`, config);
+    const res = await axios.get(`${API_URL}/api/complaints/intermediary?keyword=${keyword}`, config);
 
-    dispatch({ type: COMPLAINT_LIST_SUCCESS, payload: data?.data });
+    dispatch({ type: COMPLAINT_LIST_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     dispatch({ type: COMPLAINT_LIST_FAIL, payload: err.response?.data?.errors });
   }
@@ -173,7 +173,7 @@ export const deliverToInstance = (complaintId, formData) => async (dispatch, get
       }
     };
 
-    const { data } = await axios.put(`${API_URL}/api/complaints/${complaintId}/deliver-instance`, formData, config);
+    const res = await axios.put(`${API_URL}/api/complaints/${complaintId}/deliver-instance`, formData, config);
 
     // Toast
     Toast.show('Denuncia enviada exitosamente', {
@@ -183,7 +183,7 @@ export const deliverToInstance = (complaintId, formData) => async (dispatch, get
       animationType: 'slide-in',
     });
 
-    dispatch({ type: COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS, payload: data?.data });
+    dispatch({ type: COMPLAINT_DELIVER_TO_INSTANCE_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     // Toast
     Toast.show('¡Ups! Algo salió mal', {

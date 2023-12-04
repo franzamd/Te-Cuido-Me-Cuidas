@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   ImageBackground,
   Text,
-  StyleSheet,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -22,7 +21,7 @@ const ButtonCard = ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        height: 140,
+        height: '100%',
         width: SIZES.width,
         paddingHorizontal: SIZES.padding,
         marginVertical: SIZES.base,
@@ -31,7 +30,6 @@ const ButtonCard = ({
       <TouchableOpacity
         disabled={disabled}
         style={{
-          height: 120,
           width: SIZES.width * 0.88,
           marginTop: SIZES.radius,
           borderRadius: SIZES.radius,
@@ -72,7 +70,7 @@ const ButtonCard = ({
               <Text
                 style={{
                   color: appTheme?.textColor,
-                  marginTop: SIZES.padding,
+                  marginTop: SIZES.base,
                   ...FONTS.body5,
                 }}
               >{infoItem.description}</Text>

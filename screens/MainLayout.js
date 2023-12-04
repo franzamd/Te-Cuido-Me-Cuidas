@@ -292,7 +292,7 @@ const MainLayout = ({
               {userInfo.role === 'usuario' && (
                 <TabButton
                   label={constants.screens.emergency}
-                  icon={icons.hospital}
+                  icon={icons.emergency}
                   isFocused={selectedTab === constants.screens.emergency}
                   outerContainerStyle={emergencyFlexStyle}
                   innerContainerStyle={emergencyColorStyle}

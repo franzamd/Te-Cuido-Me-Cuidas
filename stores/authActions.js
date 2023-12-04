@@ -203,7 +203,15 @@ export const logout = () => async dispatch => {
     await axios.get(`${API_URL}/api/auth/logout`);
 
     // Clear store
-    clearStore(dispatch)
+    // clearStore(dispatch)
+
+    dispatch({ type: RESET_SELECTED_TAB });
+    dispatch({ type: COMMUNITY_RESET });
+    dispatch({ type: ESTABLISHMENT_RESET });
+    dispatch({ type: MUNICIPALITY_RESET });
+    dispatch({ type: DEPARTMENT_RESET });
+    dispatch({ type: COMPLAINT_RESET });
+    dispatch({ type: USER_RESET });
 
     dispatch({ type: USER_LOGOUT });
   } catch (error) {
@@ -255,33 +263,6 @@ export const deleteAccount = () => async (dispatch, getState) => {
     dispatch({ type: USER_DELETE_ACCOUNT_FAIL, payload: error.response?.data?.errors });
   }
 };
-
-// export const forgotPassword = formData => async dispatch => {
-//   try {
-//     const res = await axios.post(
-//       `${API_URL}/api/auth/forgotpassword`,
-//       formData,
-//       configJSON,
-//     );
-
-//     dispatch({
-//       type: FORGOT_PASSWORD_SUCCESS,
-//       payload: res.data?.data,
-//     });
-//   } catch (error) {
-//     // If failed network status
-//     if (error.message === 'Network Error') {
-//       return {
-//         isNetworkFailed: true,
-//       };
-//     }
-
-//     dispatch({
-//       type: FORGOT_PASSWORD_FAILURE,
-//       payload: error.response?.data?.errors,
-//     });
-//   }
-// };
 
 // Clear store
 function clearStore(dispatch) {

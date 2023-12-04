@@ -171,17 +171,6 @@ const ComplaintHistory = ({
   const [filter, setFilter] = useState('statusInWaitingIntermediaryAction');
   const [openFilter, setOpenFilter] = useState(false);
 
-  // Fetch my complaints
-  // TODO: Delete this example for get initial data then using isFocused for get data
-  // useEffect(() => {
-  //   if (userInfo?.role === USER_ROLE_INTERMEDIARY) {
-  //     getComplaintsFromUserIntermediary()
-  //   }
-  //   if (userInfo?.role === USER_ROLE_DEFAULT) {
-  //     getMyComplaints()
-  //   }
-  // }, [userInfo])
-
   // Reload action scroll
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -195,7 +184,7 @@ const ComplaintHistory = ({
     }
 
     setRefreshing(false);
-  }, [userInfo]);
+  }, [userInfo, filter]);
 
 
   // Call if screen is display again or return from other screen

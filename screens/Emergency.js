@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
@@ -171,6 +171,32 @@ const Emergency = ({
         >
           Emergencia
         </Text>
+
+        {/* Logo */}
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              width: 170,
+              alignSelf: 'flex-end',
+              position: 'absolute',
+            }}
+          >
+            <Image
+              source={images.logo_aec_procosi}
+              resizeMode="contain"
+              style={{
+                height: 40,
+                width: '100%',
+                borderRadius: SIZES.padding,
+              }}
+            />
+          </View>
+        </View>
       </View>
     );
   }

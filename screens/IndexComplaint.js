@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import { USER_ROLE_DEFAULT, USER_ROLE_INSTANCE, USER_ROLE_INTERMEDIARY, USER_ROLE_ADMIN } from '@env';
 
 import { MenuCard } from '../components';
-import { SIZES, FONTS, constants } from '../constants';
+import { SIZES, FONTS, constants, images } from '../constants';
 import { CreateComplaint, ComplaintInstance } from '.';
 
 const IndexComplaint = ({
@@ -38,6 +38,32 @@ const IndexComplaint = ({
         >
           Denuncias
         </Text>
+
+        {/* Logo */}
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              width: 170,
+              alignSelf: 'flex-end',
+              position: 'absolute',
+            }}
+          >
+            <Image
+              source={images.logo_aec_procosi}
+              resizeMode="contain"
+              style={{
+                height: 40,
+                width: '100%',
+                borderRadius: SIZES.padding,
+              }}
+            />
+          </View>
+        </View>
       </View>
     );
   }

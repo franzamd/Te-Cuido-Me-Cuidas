@@ -20,9 +20,9 @@ export const listUsersWithRoleInstance = () => async (dispatch, getState) => {
       }
     };
 
-    const { data } = await axios.get(`${API_URL}/api/users/role/instance`, config);
+    const res = await axios.get(`${API_URL}/api/users/role/instance`, config);
 
-    dispatch({ type: USER_ROLE_INSTANCE_LIST_SUCCESS, payload: data?.data });
+    dispatch({ type: USER_ROLE_INSTANCE_LIST_SUCCESS, payload: res?.data?.data });
   } catch (err) {
     dispatch({
       type: USER_ROLE_INSTANCE_LIST_FAIL,

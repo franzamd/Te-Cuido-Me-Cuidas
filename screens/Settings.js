@@ -89,19 +89,40 @@ const Settings = ({
           Ajustes
         </Text>
 
-        {/* <View
+        {/* Toggle Theme */}
+        {/* <IconButton
+          icon={icons.sun}
+          iconStyle={{
+            tintColor: appTheme?.tintColor,
+          }}
+          onPress={() => toggleThemeHandler()}
+        /> */}
+
+        {/* Logo */}
+        <View
           style={{
-            flexDirection: 'row',
+            flex: 1,
           }}
         >
-          <IconButton
-            icon={icons.sun}
-            iconStyle={{
-              tintColor: appTheme?.tintColor,
+          <View
+            style={{
+              flex: 1,
+              width: 170,
+              alignSelf: 'flex-end',
+              position: 'absolute',
             }}
-            onPress={() => toggleThemeHandler()}
-          />
-        </View> */}
+          >
+            <Image
+              source={images.logo_aec_procosi}
+              resizeMode="contain"
+              style={{
+                height: 40,
+                width: '100%',
+                borderRadius: SIZES.padding,
+              }}
+            />
+          </View>
+        </View>
       </View>
     );
   }
@@ -165,6 +186,16 @@ const Settings = ({
           >
             {userInfo?.role ? userInfo?.role.charAt(0).toUpperCase() + userInfo?.role.slice(1) : 'Usuario'}
           </Text>
+          {userInfo?.profile?.municipality && userInfo.profile?.department && (
+            <Text
+              style={{
+                color: appTheme?.textColor3,
+                ...FONTS.body5,
+              }}
+            >
+              {`${userInfo.profile.municipality.name}, ${userInfo.profile.department.name}`}
+            </Text>
+          )}
         </View>
       </View>
     );
