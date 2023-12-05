@@ -117,8 +117,8 @@ const UpdateProfile = ({
       setDepartment(userInfo.profile.department?._id || '0')
       setMunicipality(userInfo.profile.municipality?._id || '0')
       setProtectionMechanism(userInfo.profile.protectionMechanism || '0')
-      setEstablishment(userInfo.profile.establishment || '0')
-      setCommunity(userInfo.profile?.community || '0')
+      setEstablishment(userInfo.profile.establishment?._id || '0')
+      setCommunity(userInfo.profile?.community?._id || '0')
     }
   }, [userInfo, departments, municipalities, establishments, communities])
 
