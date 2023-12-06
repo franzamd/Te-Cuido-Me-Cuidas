@@ -4,11 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import moment from 'moment'
-import { USER_ROLE_DEFAULT, USER_ROLE_INTERMEDIARY } from '@env';
 
 import { getMyComplaints, getComplaintsFromUserIntermediary } from '../stores/complaintActions';
 import { IconButton, Loading, TextButton, FormSelect } from '../components';
-import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
+import { SIZES, FONTS, COLORS, icons, constants, config } from '../constants';
+
+const { USER_ROLE_DEFAULT, USER_ROLE_INTERMEDIARY } = config
 
 const ComplaintItem = ({ appTheme, navigation, item, userRole }) => {
   const statusChangedByUser = (item.instanceAction?.status === 'Aceptado' || item.instanceAction?.status === 'Rechazado') ? 'por Instancia' : (item.intermediaryAction?.status === 'Aceptado' || item.intermediaryAction?.status === 'Rechazado') ? 'por Intermediario' : ''

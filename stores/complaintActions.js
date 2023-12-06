@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { API_URL } from '@env';
 import { Toast } from 'react-native-toast-notifications';
-import { constants } from '../constants';
+import { constants, config } from '../constants';
 
 export const COMPLAINT_LIST_REQUEST = '@complaint/COMPLAINT_LIST_REQUEST';
 export const COMPLAINT_LIST_SUCCESS = '@complaint/COMPLAINT_LIST_SUCCESS';
@@ -20,6 +19,8 @@ export const COMPLAINT_DELETE_FAIL = '@complaint/COMPLAINT_DELETE_FAIL';
 export const COMPLAINT_DELETE_FAIL_OFFLINE = '@complaint/COMPLAINT_DELETE_FAIL_OFFLINE';
 export const COMPLAINT_CLEAR_ERROR = '@complaint/COMPLAINT_CLEAR_ERROR';
 export const COMPLAINT_RESET = '@complaint/COMPLAINT_RESET';
+
+const { API_URL } = config
 
 export const getMyComplaints = () => async (dispatch, getState) => {
   try {

@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'react-native-toast-notifications';
-import { constants } from '../constants';
+import { config, constants } from '../constants';
 
 import { RESET_SELECTED_TAB } from './tabActions'
 import { COMMUNITY_RESET } from './communityActions'
@@ -38,6 +37,8 @@ export const USER_DELETE_ACCOUNT_SUCCESS = '@userLogin/USER_DELETE_ACCOUNT_SUCCE
 export const USER_DELETE_ACCOUNT_FAIL = '@userLogin/USER_DELETE_ACCOUNT_FAIL';
 export const USER_DELETE_ACCOUNT_FAIL_OFFLINE = '@userLogin/USER_DELETE_ACCOUNT_FAIL_OFFLINE';
 export const USER_CLEAR_ERRORS = '@userLogin/USER_CLEAR_ERRORS';
+
+const { API_URL } = config
 
 export const login = formData => async dispatch => {
   try {

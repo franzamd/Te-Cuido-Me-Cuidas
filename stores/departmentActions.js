@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+import { config } from '../constants';
 
 export const DEPARTMENT_LIST_REQUEST = '@department/DEPARTMENT_LIST_REQUEST';
 export const DEPARTMENT_LIST_SUCCESS = '@department/DEPARTMENT_LIST_SUCCESS';
 export const DEPARTMENT_LIST_FAIL = '@department/DEPARTMENT_LIST_FAIL';
 export const DEPARTMENT_RESET = '@department/DEPARTMENT_RESET';
+
+const { API_URL } = config
 
 export const listDepartments = () => async (dispatch) => {
   try {

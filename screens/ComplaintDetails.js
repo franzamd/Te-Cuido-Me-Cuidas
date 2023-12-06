@@ -3,13 +3,14 @@ import { View, Text, ScrollView, StyleSheet, Linking, Alert } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
 import moment from 'moment'
-import { USER_ROLE_INTERMEDIARY } from '@env';
 import { useIsFocused } from '@react-navigation/native';
 
 import { deliverToInstance, deleteComplaint } from '../stores/complaintActions';
 import { listUsersWithRoleInstance } from '../stores/userActions';
 import { IconButton, ComplaintValue, LineDivider, ComplaintTextArea, TextButton, FormInputArea, FormSelect } from '../components';
-import { SIZES, FONTS, COLORS, icons, constants } from '../constants';
+import { SIZES, FONTS, COLORS, icons, constants, config } from '../constants';
+
+const { USER_ROLE_INTERMEDIARY, USER_ROLE_DEFAULT } = config
 
 const ComplaintDetails = ({
   appTheme,
@@ -151,7 +152,7 @@ const ComplaintDetails = ({
     setOpenStatus(false)
     const formData = {
       status,
-      user,
+      user: user !== '0' ? user : '',
       description
     }
     await deliverToInstance(complaintSelected._id, formData)
@@ -667,9 +668,10 @@ const ComplaintDetails = ({
         )}
 
         {/* Delete Complaint if user created was user role intermediary */}
-        {(userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && complaintSelected.statusUserAction === constants.statusUserAction.intermediary)
-          || (complaintSelected.intermediaryAction.status === constants.statusComplaint.inWaiting && complaintSelected.user?._id === userInfo?._id)
-          && (
+        {(
+          (userInfo?.role === USER_ROLE_INTERMEDIARY && complaintSelected.user?._id.toString() === userInfo?._id.toString() && complaintSelected.statusUserAction === constants.statusUserAction.intermediary)
+          || (userInfo?.role === USER_ROLE_DEFAULT && complaintSelected.intermediaryAction.status === constants.statusComplaint.inWaiting && complaintSelected.user?._id === userInfo?._id)
+        ) && (
             renderBtnDeleteComplaint()
           )}
 

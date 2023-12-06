@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+import { config } from '../constants';
 
 export const USER_ROLE_INSTANCE_LIST_REQUEST = '@user/USER_ROLE_INSTANCE_LIST_REQUEST';
 export const USER_ROLE_INSTANCE_LIST_SUCCESS = '@user/USER_ROLE_INSTANCE_LIST_SUCCESS';
 export const USER_ROLE_INSTANCE_LIST_FAIL = '@user/USER_ROLE_INSTANCE_LIST_FAIL';
 export const USER_RESET = '@user/USER_RESET';
+
+const { API_URL } = config
 
 export const listUsersWithRoleInstance = () => async (dispatch, getState) => {
   try {

@@ -221,7 +221,7 @@ const Emergency = ({
               ...FONTS.body3,
             }}
           >
-            Envía una denuncia rápida a la situación que estás enfrentando
+            Elige y pulsa el botón
           </Text>
         </View>
 
@@ -230,7 +230,6 @@ const Emergency = ({
           infoItem={{
             image: images.button_violence_sexual,
             title: 'Violencia Sexual',
-            description: 'Pulsa el botón para enviar una denuncia de violencia sexual'
           }}
           disabled={isDisabledButtonsPress}
           onPress={handleBtnTypeSexual}
@@ -241,7 +240,6 @@ const Emergency = ({
           infoItem={{
             image: images.button_violence_physical,
             title: 'Violencia Física',
-            description: 'Pulsa el botón para enviar una denuncia violencia física'
           }}
           disabled={isDisabledButtonsPress}
           onPress={handleBtnTypePhysical}
@@ -252,7 +250,6 @@ const Emergency = ({
           infoItem={{
             image: images.button_violence_psychological,
             title: 'Violencia Psicológica',
-            description: 'Pulsa el botón para enviar una denuncia violencia psicológica'
           }}
           disabled={isDisabledButtonsPress}
           onPress={handleBtnTypePsychological}

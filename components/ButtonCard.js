@@ -45,18 +45,20 @@ const ButtonCard = ({
             flexDirection: 'row'
           }}
         >
-          {/* Title and Description */}
+          {/* Title */}
           <View
             style={{
-              width: '50%'
+              width: '50%',
+              height: 100
             }}
           >
             <View
               style={{
                 flex: 1,
-                left: 10,
-                justifyContent: 'flex-start',
+                left: SIZES.padding,
+                alignItems: 'flex-start',
                 marginVertical: SIZES.radius,
+                justifyContent: 'center',
               }}
             >
               <Text
@@ -67,13 +69,6 @@ const ButtonCard = ({
               >
                 {infoItem.title}
               </Text>
-              <Text
-                style={{
-                  color: appTheme?.textColor,
-                  marginTop: SIZES.base,
-                  ...FONTS.body5,
-                }}
-              >{infoItem.description}</Text>
             </View>
           </View>
           {/* Image */}

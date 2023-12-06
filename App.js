@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   LogBox,
   StatusBar,
   Appearance,
 } from 'react-native';
-import { API_URL } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createStore, applyMiddleware } from 'redux';
+import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { persistReducer, persistStore, } from 'redux-persist';
@@ -29,8 +28,10 @@ import {
   CreateComplaintAssisted,
   UpdateProfile
 } from './screens';
-import { COLORS } from './constants';
+import { COLORS, config } from './constants';
 
+
+const { API_URL } = config
 console.log('API connected:', API_URL);
 
 const Stack = createNativeStackNavigator();
@@ -64,7 +65,7 @@ const App = () => {
 
   // Hide SplashScreen
   useEffect(() => {
-    // persistor.purge()
+    // persistor.flush()
     SplashScreen.hide();
   }, []);
 

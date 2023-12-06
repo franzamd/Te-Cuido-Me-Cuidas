@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { API_URL } from '@env';
+import { config } from '../constants';
 
 export const MUNICIPALITY_LIST_REQUEST = '@municipality/MUNICIPALITY_LIST_REQUEST';
 export const MUNICIPALITY_LIST_SUCCESS = '@municipality/MUNICIPALITY_LIST_SUCCESS';
 export const MUNICIPALITY_LIST_FAIL = '@municipality/MUNICIPALITY_LIST_FAIL';
 export const MUNICIPALITY_RESET = '@municipality/MUNICIPALITY_RESET';
+
+const { API_URL } = config
 
 export const listMunicipalities = (departmentId) => async (dispatch) => {
   try {

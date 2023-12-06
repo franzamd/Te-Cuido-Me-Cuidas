@@ -13,28 +13,7 @@ const ComplaintValue = ({
     <View
       style={{
         flexDirection: 'row',
-        height:
-          // Screens more height
-          SIZES.height > 600
-            ? value.length < 30
-              ? 70
-              : value.length < 50
-                ? 80
-                : value.length < 100
-                  ? 90
-                  : value.length < 150
-                    ? 120
-                    : 130
-            : // Screens small height
-            value.length < 30
-              ? 60
-              : value.length < 50
-                ? 70
-                : value.length < 100
-                  ? 80
-                  : value.length < 150
-                    ? 90
-                    : 100,
+        minHeight: 60,
         alignItems: 'center',
       }}
     >

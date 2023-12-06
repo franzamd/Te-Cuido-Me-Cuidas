@@ -10,6 +10,7 @@ import theme, {
 import images from './images';
 import icons from './icons';
 import dummyData from './dummyData';
+import config from './config';
 
 export {
   constants,
@@ -23,4 +24,5 @@ export {
   images,
   icons,
   dummyData,
+  config
 };

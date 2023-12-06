@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
-import { USER_ROLE_DEFAULT, USER_ROLE_INSTANCE, USER_ROLE_INTERMEDIARY, USER_ROLE_ADMIN } from '@env';
 
 import { MenuCard } from '../components';
-import { SIZES, FONTS, constants, images } from '../constants';
+import { SIZES, FONTS, constants, images, config } from '../constants';
 import { CreateComplaint, ComplaintInstance } from '.';
+
+const { USER_ROLE_DEFAULT, USER_ROLE_INSTANCE, USER_ROLE_INTERMEDIARY, USER_ROLE_ADMIN } = config
 
 const IndexComplaint = ({
   appTheme,

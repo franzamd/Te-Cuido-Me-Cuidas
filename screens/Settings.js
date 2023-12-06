@@ -2,12 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect } from 'react-redux';
-import { TERMS_AND_CONDITIONS } from '@env'
 
 import { toggleTheme } from '../stores/themeActions';
 import { logout, deleteAccount } from '../stores/authActions';
 import { IconButton, TextButton, SettingValue } from '../components';
-import { SIZES, FONTS, icons, COLORS, images, constants } from '../constants';
+import { SIZES, FONTS, icons, COLORS, images, constants, config } from '../constants';
+
+const { TERMS_AND_CONDITIONS } = config
 
 const Settings = ({
   appTheme,
@@ -170,6 +171,7 @@ const Settings = ({
             alignItems: 'flex-start',
           }}
         >
+          {/* Name */}
           <Text
             style={{
               color: COLORS.primary2,
@@ -178,6 +180,7 @@ const Settings = ({
           >
             {userInfo?.profile?.name || 'Usuario'}
           </Text>
+          {/* Role */}
           <Text
             style={{
               color: appTheme?.textColor3,
@@ -186,6 +189,18 @@ const Settings = ({
           >
             {userInfo?.role ? userInfo?.role.charAt(0).toUpperCase() + userInfo?.role.slice(1) : 'Usuario'}
           </Text>
+          {/* Establishment or Community */}
+          {(userInfo?.profile?.establishment?.name || userInfo?.profile?.community?.name) && (
+            <Text
+              style={{
+                color: appTheme?.textColor3,
+                ...FONTS.body5,
+              }}
+            >
+              {userInfo?.profile?.establishment?.name || userInfo?.profile?.community?.name}
+            </Text>
+          )}
+          {/* Municipality and Department */}
           {userInfo?.profile?.municipality && userInfo.profile?.department && (
             <Text
               style={{
